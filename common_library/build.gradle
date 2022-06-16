@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 group ='com.github.acer-xhy'
 apply from: "default.gradle"
 android {
