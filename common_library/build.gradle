@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+group ='com.github.acer-xhy'
+apply from: "default.gradle"
+android {
+    resourcePrefix "app_common"
+    defaultConfig {
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api dep.andoridx
+    api dep.andoridx_recycler_view
+
+    api dep.okhttp
+    api dep.okio
+
+    api dep.retrofit
+    api dep.rxandroid
+    api dep.rxjava
+    api dep.retrofit_adapter_rxjava2
+    api dep.fastjson
+    api dep.converter_fastjson_android
+
+    api dep.glide
+    annotationProcessor dep.glide_compiler
+
+    api dep.lifecycle_extensions
+
+    api dep.arouter_api
+    annotationProcessor dep.arouter_compiler
+
+    api dep.eventbus
+
+    api dep.picker_view
+
+    api dep.umsdk_asms
+    api dep.umeng_common
+
+    api dep.mmkv
+    api dep.xxpermissions
+    api dep.toast
+}
