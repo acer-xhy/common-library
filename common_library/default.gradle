@@ -2,13 +2,10 @@ apply from: "config.gradle"
 
 android {
     compileSdkVersion android.compileSdkVersion
-    flavorDimensions 'default'
 
     defaultConfig {
         minSdkVersion android.minSdkVersion
         targetSdkVersion android.targetSdkVersion
-        versionCode android.versionCode
-        versionName android.versionName
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         javaCompileOptions {
             annotationProcessorOptions {
@@ -33,6 +30,6 @@ android {
     lintOptions {
         checkReleaseBuilds true
         abortOnError true
-        check 'NewApi', 'InlinedApi'
+        checkOnly 'NewApi', 'InlinedApi'
     }
 }

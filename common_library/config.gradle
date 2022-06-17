@@ -1,10 +1,8 @@
 ext {
     android = [
-            applicationId    : "com.jgw.newsupercodepda",
             compileSdkVersion: 30,
             minSdkVersion    : 21,
             targetSdkVersion : 26,
-            versionName      : "1.0.0"
     ]
 
     libsVersion = [
@@ -19,8 +17,8 @@ ext {
             fastjson = "1.1.71.android",
             converter_fastjson_android = "2.2.0",
             glide = "4.12.0",
-            arouter_api = "1.5.0",
-            arouter_compiler = "1.2.2",
+            arouter_api = "1.5.2",
+            arouter_compiler = "1.5.2",
             eventbus = "3.2.0",
             picker_view = "3.2.5",
             umsdk_asms = "1.4.1",
