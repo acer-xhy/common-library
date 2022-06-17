@@ -43,25 +43,7 @@ public class CommonInterceptor implements Interceptor {
         builder.url(httpUrl);
         String url = urlBuilder.toString();
 
-        String token = MMKVUtils.getString(MMKVUtils.USER_TOKEN);
-        if (!TextUtils.isEmpty(token)) {
-            String versionName = BuildConfigUtils.getVersionName();
-            //noinspection ConstantConditions
-            builder.header("super-token", token)
-                    .addHeader("service-auth-key", "b8379aa226f415c7fd71dc6281a1b7ba45eb6b42710cea6092c0a4d108f5088e")
-                    .addHeader("versionType", MMKVUtils.getInt(MMKVUtils.VERSION_TYPE, -1) + "")
-                    .addHeader("username", MMKVUtils.getString(MMKVUtils.USER_MOBILE))
-                    .addHeader("devicesUUID", DevicesUtils.getDevicesSerialNumber())
-                    .addHeader("versionCode", BuildConfigUtils.getVersionCode() + "")
-                    .addHeader("versionName", TextUtils.isEmpty(versionName) ? "" : versionName);
-        }
-        int httpType = MMKVUtils.getInt(MMKVUtils.HTTP_TYPE);
-        if (httpType == MMKVUtils.TYPE_PRERELEASE) {
-            builder.addHeader("Cookie", "__cjm3_release__=adv");
-        }
-        request = builder.addHeader("from", "pda").build();
         String bigFile = request.header("BigFile");
-
         String requestInfo = request.toString();
         LogUtils.xswShowLog("request=" + requestInfo);
         printParams(request.body());
@@ -84,7 +66,6 @@ public class CommonInterceptor implements Interceptor {
         } else {
             LogUtils.xswShowLog("url=" + url+ ":bigFile=ture");
         }
-        LogUtils.xswShowLog("token=" + token);
         return response;
     }
 
