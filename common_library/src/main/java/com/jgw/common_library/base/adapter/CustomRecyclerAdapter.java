@@ -11,7 +11,7 @@ import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.fastjson.JSONObject;
+import com.jgw.common_library.utils.JsonUtils;
 import com.jgw.common_library.utils.click_utils.listener.OnItemLongTimeClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnPackageLoadMoreListener;
@@ -241,8 +241,11 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
             for (int i = 0; i < size; i++) {
                 T oldData = mList.get(i);
                 T newData = list.get(i);
-                oldDataJson = JSONObject.toJSONString(oldData);
-                newDataJson = JSONObject.toJSONString(newData);
+                oldDataJson = JsonUtils.toJsonString(oldData);
+                newDataJson = JsonUtils.toJsonString(newData);
+                if (oldDataJson.hashCode() == newDataJson.hashCode()) {
+                    continue;
+                }
                 if (TextUtils.equals(oldDataJson, newDataJson)) {
                     continue;
                 }
