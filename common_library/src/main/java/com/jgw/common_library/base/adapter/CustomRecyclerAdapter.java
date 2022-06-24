@@ -247,7 +247,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
                     continue;
                 }
                 mList.set(i, newData);
-                notifyItemChanged(i);
+                notifyItemChanged(getHeaderCount() + i);
             }
         } else {
             notifyRemoveListItem();
@@ -306,7 +306,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
             return;
         }
         mList.set(index, item);
-        notifyItemChanged(index);
+        notifyItemChanged(getHeaderCount() + index);
     }
 
     public void addAndNotifyLastItem(T item) {
