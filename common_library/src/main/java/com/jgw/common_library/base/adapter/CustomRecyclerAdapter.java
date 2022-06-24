@@ -1,6 +1,7 @@
 package com.jgw.common_library.base.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jgw.common_library.utils.click_utils.listener.OnItemLongTimeClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnPackageLoadMoreListener;
@@ -127,8 +129,8 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         }
     }
 
-    public T getContentItemData(int position){
-        return mList.get(position-getHeaderCount());
+    public T getContentItemData(int position) {
+        return mList.get(position - getHeaderCount());
     }
 
     @Override
@@ -202,7 +204,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
     @Override
     public int getItemCount() {
         //noinspection UnnecessaryLocalVariable
-        int adapterItemCount = getAdapterItemCount() + getHeaderCount() + getFooterCount() + getEmptyCount();
+        int adapterItemCount = getAdapterItemCount() + getHeaderCount() + getFooterCount();
         return adapterItemCount;
     }
 
@@ -219,15 +221,6 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         return 0;
     }
 
-    /**
-     * 空界面Item
-     * 改用{@link com.jgw.common_library.base.view.CustomRecyclerViewContainer}实现空布局时不可使用此方法
-     * @return 0或1
-     */
-    public int getEmptyCount() {
-        return 0;
-    }
-
     public int getAdapterItemCount() {
         if (mList == null) {
             return 0;
@@ -241,25 +234,35 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
     }
 
     public void notifyRefreshList(List<T> list) {
-        mList.clear();
-        notifyDataSetChanged();
-        mList.addAll(list);
-        notifyDataSetChanged();
-        if (mRecyclerViewReference != null && mRecyclerViewReference.get() != null && !mList.isEmpty()) {
-            mRecyclerViewReference.get().scrollToPosition(0);
+        int size = mList.size();
+        if (size == list.size()) {
+            String oldDataJson;
+            String newDataJson;
+            for (int i = 0; i < size; i++) {
+                T oldData = mList.get(i);
+                T newData = list.get(i);
+                oldDataJson = JSONObject.toJSONString(oldData);
+                newDataJson = JSONObject.toJSONString(newData);
+                if (TextUtils.equals(oldDataJson, newDataJson)) {
+                    continue;
+                }
+                mList.set(i, newData);
+                notifyItemChanged(i);
+            }
+        } else {
+            notifyRemoveListItem();
+            notifyAddListItem(list);
+            if (mRecyclerViewReference != null && mRecyclerViewReference.get() != null && !mList.isEmpty()) {
+                mRecyclerViewReference.get().scrollToPosition(0);
+            }
         }
     }
 
     public void notifyRemoveListItem() {
         int size = mList.size();
-        int otherItemCount = getEmptyCount() + getHeaderCount() + getFooterCount();
+        int otherItemCount = getHeaderCount() + getFooterCount();
         mList.clear();
-        if (getEmptyCount() == 1) {
-            notifyItemRangeRemoved(getHeaderCount() + 1, size - 1);
-            notifyItemChanged(getHeaderCount());
-        } else {
-            notifyItemRangeRemoved(getHeaderCount(), size);
-        }
+        notifyItemRangeRemoved(getHeaderCount(), size);
     }
 
     public void notifyAddListItem(List<T> list) {
@@ -267,13 +270,9 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
             return;
         }
         int size = mList.size();
-        int emptyCount = getEmptyCount();
-        int startCount = getHeaderCount() + getEmptyCount() + size;
-        int offset = list.size() - getEmptyCount();
+        int startCount = getHeaderCount() + size;
+        int offset = list.size();
         mList.addAll(list);
-        if (emptyCount == 1) {
-            notifyItemChanged(getHeaderCount());
-        }
         notifyItemRangeInserted(startCount, offset);
     }
 
@@ -283,46 +282,31 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
 
     public void notifyAddItem(T item, int position) {
         int size = mList.size();
-        boolean empty = isEmpty();
-        int emptyCount = getEmptyCount();
         mList.add(position, item);
-        if (empty && emptyCount == 1) {
-            notifyItemChanged(getHeaderCount() + emptyCount - 1);
-        } else {
-            notifyItemInserted(getHeaderCount() + position);
-        }
+        notifyItemInserted(getHeaderCount() + position);
     }
 
     public void notifyRemoveItem(int position) {
         int size = mList.size();
-        if (size <= 1 && getEmptyCount() == 1) {
-            notifyItemChanged(getHeaderCount());
-        } else {
-            mList.remove(position);
-            notifyItemRemoved(getHeaderCount() + position);
-        }
+        mList.remove(position);
+        notifyItemRemoved(getHeaderCount() + position);
     }
 
     public void notifyRemoveItem(T item) {
-        int size = mList.size();
-        if (size <= 1 && getEmptyCount() == 1) {
-            notifyItemChanged(getHeaderCount());
-        } else {
-            int index = mList.indexOf(item);
-            if (index == -1) {
-                return;
-            }
-            mList.remove(index);
-            notifyItemRemoved(getHeaderCount() + index);
+        int index = mList.indexOf(item);
+        if (index == -1) {
+            return;
         }
+        notifyRemoveItem(index);
     }
 
     public void notifyRefreshItem(T item) {
         int index = mList.indexOf(item);
         if (index != -1) {
-            mList.set(index, item);
-            notifyItemChanged(index);
+            return;
         }
+        mList.set(index, item);
+        notifyItemChanged(index);
     }
 
     public void addAndNotifyLastItem(T item) {
