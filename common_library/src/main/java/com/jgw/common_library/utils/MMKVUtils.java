@@ -5,8 +5,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.tencent.mmkv.MMKV;
 
 import java.util.List;
@@ -86,21 +84,24 @@ public class MMKVUtils {
     public static int getInt(@NonNull String key, int defaultValue) {
         return mmkv.decodeInt(key, defaultValue);
     }
+
     public static void saveTempData(Object object) {
-        String json = JSONObject.toJSONString(object);
+        String json = JsonUtils.toJsonString(object);
         MMKVUtils.save(MMKVUtils.TEMP_DATA, json);
     }
-    public static <T>T getTempData(Class<T> clazz) {
+
+    public static <T> T getTempData(Class<T> clazz) {
         String json = MMKVUtils.getString(MMKVUtils.TEMP_DATA);
         //noinspection UnnecessaryLocalVariable
-        T object = JSONArray.parseObject(json, clazz);
+        T object = JsonUtils.parseObject(json, clazz);
         return object;
     }
-    public static <T>List<T> getTempDataList(Class<T> clazz) {
+
+    public static <T> List<T> getTempDataList(Class<T> clazz) {
         String json = MMKVUtils.getString(MMKVUtils.TEMP_DATA);
 //        MMKVUtils.save(MMKVUtils.TEMP_DATA, "");
         //noinspection UnnecessaryLocalVariable
-        List<T> list = JSONArray.parseArray(json, clazz);
+        List<T> list = JsonUtils.parseArray(json, clazz);
         return list;
     }
 }
