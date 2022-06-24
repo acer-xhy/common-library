@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,6 +30,9 @@ import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListen
 import com.jgw.common_library.utils.click_utils.listener.OnSingleClickListener;
 import com.jgw.common_library.widget.loadingDialog.CircularProgressDialogFragment;
 import com.umeng.analytics.MobclickAgent;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Created by XiongShaoWu
@@ -57,7 +61,8 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         }
         context = this;
         fm = getSupportFragmentManager();
-        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), null, false);
+//        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), null, false);
+        mBindingView = initViewBinding();
         setContentView(mBindingView.getRoot());
         mBindingView.setLifecycleOwner(this);
         initView();
@@ -72,6 +77,23 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         xMultiple = point.x / 360f;
         mPhoneWidth = point.x;
         mPhoneHeight = point.y;
+    }
+
+    private SV initViewBinding() {
+        Class<SV> clazz = ClassUtil.getViewBinding(this);
+        SV viewBinding = null;
+        //noinspection TryWithIdenticalCatches
+        try {
+            Method inflate = clazz.getMethod("inflate", LayoutInflater.class);
+            viewBinding = (SV) inflate.invoke(null, getLayoutInflater());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return viewBinding;
     }
 
     @Override
@@ -101,7 +123,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     public void getSaveInstanceState(@NonNull Bundle savedInstanceState) {
     }
 
-
+    @Deprecated
     public abstract int initResId();
 
     protected abstract void initView();

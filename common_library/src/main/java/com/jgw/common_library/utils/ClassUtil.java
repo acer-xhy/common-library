@@ -1,6 +1,7 @@
 package com.jgw.common_library.utils;
 
 
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.AndroidViewModel;
 
 import java.lang.reflect.ParameterizedType;
@@ -19,6 +20,15 @@ public class ClassUtil {
         Class<?> currentClass = obj.getClass();
         Class<T> tClass = getGenericClass(currentClass, AndroidViewModel.class);
         if (tClass == null || tClass == AndroidViewModel.class) {
+            return null;
+        }
+        return tClass;
+    }
+
+    public static <T> Class<T> getViewBinding(Object obj) {
+        Class<?> currentClass = obj.getClass();
+        Class<T> tClass = getGenericClass(currentClass, ViewDataBinding.class);
+        if (tClass == null || tClass == ViewDataBinding.class) {
             return null;
         }
         return tClass;
