@@ -10,7 +10,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -18,11 +17,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.viewmodel.BaseViewModel;
-import com.jgw.common_library.utils.ClassUtil;
+import com.jgw.common_library.utils.ClassUtils;
 import com.jgw.common_library.utils.click_utils.ClickUtils;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnSingleClickListener;
 import com.umeng.analytics.MobclickAgent;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -44,7 +46,9 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getActivity();
 
-        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), container, false);
+//        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), container, false);
+        mBindingView = initViewBinding();
+
         mBindingView.setLifecycleOwner(this);
         mView = mBindingView.getRoot();
         initView();
@@ -54,13 +58,28 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
         initListener();
         return mView;
     }
-
+    private SV initViewBinding() {
+        Class<SV> clazz = ClassUtils.getViewBinding(this);
+        SV viewBinding = null;
+        //noinspection TryWithIdenticalCatches
+        try {
+            Method inflate = clazz.getMethod("inflate", LayoutInflater.class);
+            viewBinding = (SV) inflate.invoke(null, getLayoutInflater());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return viewBinding;
+    }
 
     /**
      * 初始化ViewModel
      */
     private void initViewModel() {
-        Class<VM> viewModelClass = ClassUtil.getViewModel(this);
+        Class<VM> viewModelClass = ClassUtils.getViewModel(this);
         if (viewModelClass != null) {
             ViewModelProvider viewModelProvider = new ViewModelProvider(this);
             this.mViewModel = viewModelProvider.get(viewModelClass);

@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 
 import com.jgw.common.network.ApiService;
 import com.jgw.common_library.http.rxjava.CustomObserver;
+import com.jgw.common_library.utils.JsonUtils;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -28,19 +29,6 @@ public class ExampleInstrumentedTest {
     }
     @Test
     public void testNet(){
-        HttpUtils.getGatewayApi(ApiService.class)
-                .getCheckDevice("12345678")
-                .compose(HttpUtils.applyMainSchedulers())
-                .subscribe(new CustomObserver<String>() {
-                    @Override
-                    public void onNext(String s) {
 
-                    }
-                });
-        try {
-            Thread.sleep(60*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }

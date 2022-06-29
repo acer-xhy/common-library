@@ -16,14 +16,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.viewmodel.BaseViewModel;
-import com.jgw.common_library.utils.ClassUtil;
+import com.jgw.common_library.utils.ClassUtils;
 import com.jgw.common_library.utils.LogUtils;
 import com.jgw.common_library.utils.click_utils.ClickUtils;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
@@ -80,7 +79,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     }
 
     private SV initViewBinding() {
-        Class<SV> clazz = ClassUtil.getViewBinding(this);
+        Class<SV> clazz = ClassUtils.getViewBinding(this);
         SV viewBinding = null;
         //noinspection TryWithIdenticalCatches
         try {
@@ -113,7 +112,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
      * 初始化ViewModel
      */
     private void initViewModel() {
-        Class<VM> viewModelClass = ClassUtil.getViewModel(this);
+        Class<VM> viewModelClass = ClassUtils.getViewModel(this);
         if (viewModelClass != null) {
             ViewModelProvider viewModelProvider = new ViewModelProvider(this);
             this.mViewModel = viewModelProvider.get(viewModelClass);
