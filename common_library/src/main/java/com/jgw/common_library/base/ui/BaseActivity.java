@@ -123,7 +123,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     }
 
     @Deprecated
-    public abstract int initResId();
+    public int initResId(){return 0;}
 
     protected abstract void initView();
 

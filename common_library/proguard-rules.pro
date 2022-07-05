@@ -130,3 +130,7 @@
 -keep public class com.jgw.*.R$*{
       public static final int *;
 }
+
+-keep class  * extends androidx.databinding.ViewDataBinding {
+       public <methods>;
+}

@@ -91,7 +91,8 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
         return mView.findViewById(resId);
     }
 
-    protected abstract int initResId();
+    @Deprecated
+    public int initResId(){return 0;}
 
     protected abstract void initView();
 
