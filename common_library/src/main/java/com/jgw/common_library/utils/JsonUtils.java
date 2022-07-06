@@ -11,22 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonUtils {
+    /**
+     * 对象序列化为JSON字符串
+     * 仅支持字段为基本数据类型或引用对象中字段也全部为基本数据类型的对象
+     * 不能包含公共的非基本数据类型的get开头的方法(如Drawable(崩溃)(替换为_get),ToOne(非target类型)等)
+     * @return jsonString
+     */
     public static String toJsonString(Object object) {
+        //noinspection IfStatementWithIdenticalBranches
         if (object instanceof List) {
-            return toJsonString((List<?>) object);
+            return JSONArray.toJSONString(object);
         } else {
-            return toJsonString(object, true, true, true, true);
+            return JSON.toJSONString(object);
         }
-    }
-
-    public static String toJsonString(List<?> object) {
-        return JSONArray.toJSONString(object);
-    }
-
-    public static String toJsonString(Object object, boolean fieldOnly, boolean jsonTypeSupport, boolean jsonFieldSupport, boolean fieldGenericSupport) {
-        SerializeConfig config = new SerializeConfig();
-        config.registerIfNotExists(object.getClass(), object.getClass().getModifiers(), fieldOnly, jsonTypeSupport, jsonFieldSupport, fieldGenericSupport);
-        return JSON.toJSONString(object, config);
     }
 
     public static <T> T parseObject(String json, Class<T> clazz) {
