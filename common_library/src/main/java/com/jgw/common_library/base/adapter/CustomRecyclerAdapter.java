@@ -11,10 +11,10 @@ import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jgw.common_library.utils.JsonUtils;
 import com.jgw.common_library.utils.click_utils.listener.OnItemLongTimeClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnPackageLoadMoreListener;
+import com.jgw.common_library.utils.json.JsonUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
