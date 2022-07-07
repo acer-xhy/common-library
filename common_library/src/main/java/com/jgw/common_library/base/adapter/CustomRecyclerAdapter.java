@@ -234,30 +234,41 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
     }
 
     public void notifyRefreshList(List<T> list) {
-        int size = mList.size();
-        if (size == list.size()) {
-            String oldDataJson;
-            String newDataJson;
-            for (int i = 0; i < size; i++) {
-                T oldData = mList.get(i);
-                T newData = list.get(i);
-                oldDataJson = JsonUtils.toJsonString(oldData);
-                newDataJson = JsonUtils.toJsonString(newData);
-                if (oldDataJson.hashCode() == newDataJson.hashCode()) {
-                    continue;
-                }
-                if (TextUtils.equals(oldDataJson, newDataJson)) {
-                    continue;
-                }
-                mList.set(i, newData);
-                notifyItemChanged(getHeaderCount() + i);
-            }
+        int oldSize = mList.size();
+        int newSize = list.size();
+        if (oldSize == newSize) {
+            updateCurrentList(list, oldSize);
+            return;
+        }
+        if (newSize > oldSize) {
+            updateCurrentList(list, oldSize);
+            notifyAddListItem(list.subList(oldSize, newSize));
         } else {
-            notifyRemoveListItem();
-            notifyAddListItem(list);
-            if (mRecyclerViewReference != null && mRecyclerViewReference.get() != null && !mList.isEmpty()) {
-                mRecyclerViewReference.get().scrollToPosition(0);
+            updateCurrentList(list, newSize);
+            mList.subList(newSize, oldSize).clear();
+            notifyItemRangeRemoved(newSize, oldSize);
+        }
+        if (mRecyclerViewReference != null && mRecyclerViewReference.get() != null && !mList.isEmpty()) {
+            mRecyclerViewReference.get().scrollToPosition(0);
+        }
+    }
+
+    private void updateCurrentList(List<T> newList, int size) {
+        String oldDataJson;
+        String newDataJson;
+        for (int i = 0; i < size; i++) {
+            T oldData = mList.get(i);
+            T newData = newList.get(i);
+            oldDataJson = JsonUtils.toJsonString(oldData);
+            newDataJson = JsonUtils.toJsonString(newData);
+            if (oldDataJson.hashCode() == newDataJson.hashCode()) {
+                continue;
             }
+            if (TextUtils.equals(oldDataJson, newDataJson)) {
+                continue;
+            }
+            mList.set(i, newData);
+            notifyItemChanged(getHeaderCount() + i);
         }
     }
 
