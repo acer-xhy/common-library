@@ -4,12 +4,15 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.jgw.common_library.utils.json.JsonArray;
-import com.jgw.common_library.utils.json.JsonObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JsonUtils {
+
+    private final static List<Class<?>> mClassFilter = new ArrayList<>();
+
     /**
      * 对象序列化为JSON字符串
      * 仅支持字段为基本数据类型或引用对象中字段也全部为基本数据类型的对象
@@ -20,10 +23,34 @@ public class JsonUtils {
     public static String toJsonString(Object object) {
         //noinspection IfStatementWithIdenticalBranches
         if (object instanceof List) {
-            return JSONArray.toJSONString(object);
+            return JSONArray.toJSONString(object, getFilter());
         } else {
-            return JSON.toJSONString(object);
+            return JSON.toJSONString(object, getFilter());
         }
+    }
+
+    private static PropertyFilter getFilter() {
+        PropertyFilter filter = null;
+        if (!mClassFilter.isEmpty()) {
+            filter = (object, name, value) -> {
+                for (Class<?> c : mClassFilter) {
+                    if (c.isAssignableFrom(object.getClass())) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+        }
+        return filter;
+    }
+
+    public static void addFilterClass(Class<?> clazz) {
+        mClassFilter.add(clazz);
+    }
+
+    public static void clearFilterClass() {
+        mClassFilter.clear();
     }
 
     public static <T> T parseObject(String json, Class<T> clazz) {
