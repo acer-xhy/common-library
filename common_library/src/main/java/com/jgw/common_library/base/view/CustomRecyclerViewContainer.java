@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.NestedScrollingChild2;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jgw.common_library.base.adapter.CustomRecyclerAdapter;
@@ -77,6 +78,9 @@ public class CustomRecyclerViewContainer extends LinearLayout {
 
     public void setEmptyLayout(@IdRes int resId) {
         emptyView = LayoutInflater.from(getContext()).inflate(resId, this, false);
+        if (!(emptyView instanceof NestedScrollingChild2)){
+            throw new IllegalStateException("empty view must be implements NestedScrollingChild!");
+        }
         emptyView.setVisibility(VISIBLE);
         addView(emptyView);
     }
