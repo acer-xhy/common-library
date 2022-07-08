@@ -316,7 +316,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
 
     public void notifyRefreshItem(T item) {
         int index = mList.indexOf(item);
-        if (index != -1) {
+        if (index == -1) {
             return;
         }
         mList.set(index, item);
