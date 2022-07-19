@@ -34,7 +34,6 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
     public Context mContext;
     //item类型
     public static final int ITEM_PAGE_SIZE = 20;
-    public static final int ITEM_TYPE_EMPTY = -10;
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_FOOTER = 1;
     public static final int ITEM_TYPE_GROUP = 2;
@@ -106,6 +105,10 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         }
     }
 
+    /**
+     * 改为notify方法添加数据
+     */
+    @Deprecated
     public void setDataList(List<T> list) {
         if (mList == null) {
             mList = list;
@@ -135,11 +138,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
 
     @Override
     public int getItemViewType(int position) {
-        if (isEmpty()) {
-            return ITEM_TYPE_EMPTY;
-        } else {
-            return ITEM_TYPE_CONTENT1;
-        }
+        return ITEM_TYPE_CONTENT1;
     }
 
     public class ContentViewHolder<C extends ViewDataBinding>

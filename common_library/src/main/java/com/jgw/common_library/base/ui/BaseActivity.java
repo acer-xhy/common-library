@@ -44,8 +44,6 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     protected VM mViewModel;
     protected SV mBindingView;
 
-    @Deprecated
-    public static BaseActivity context;
     public FragmentManager fm;
     public static float xMultiple;
     private CircularProgressDialogFragment mDialog;
@@ -58,7 +56,6 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         if (savedInstanceState != null) {
             getSaveInstanceState(savedInstanceState);
         }
-        context = this;
         fm = getSupportFragmentManager();
 //        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), null, false);
         mBindingView = initViewBinding();
@@ -98,7 +95,6 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     @Override
     protected void onResume() {
         super.onResume();
-        context = this;
         MobclickAgent.onResume(this);
     }
 
@@ -121,9 +117,6 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
 
     public void getSaveInstanceState(@NonNull Bundle savedInstanceState) {
     }
-
-    @Deprecated
-    public int initResId(){return 0;}
 
     protected abstract void initView();
 
