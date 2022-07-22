@@ -47,6 +47,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     public FragmentManager fm;
     public static float xMultiple;
     private CircularProgressDialogFragment mDialog;
+    private boolean isShowing;
     public static int mPhoneWidth;
     public static int mPhoneHeight;
 
@@ -249,7 +250,8 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
             mDialog = CircularProgressDialogFragment.newInstance(-1);
             mDialog.setCancelable(false);
         }
-        if (!mDialog.isAdded()) {
+        if (!isShowing && !mDialog.isAdded()) {
+            isShowing = true;
             mDialog.show(fm, "dialogFragment");
             addTransparentBackground();
         }
@@ -260,6 +262,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
             mDialog.dismiss();
         }
         removeTransparentBackground();
+        isShowing=false;
     }
 
     @Override
