@@ -21,7 +21,7 @@ public class HttpClient {
     private static final HashMap<ApiConfigInfoBean, Object> map = new HashMap<>();
 
     public static synchronized <T> T getApi(Class<T> clz, String url, OkHttpClient client) {
-        ApiConfigInfoBean<T> infoBean = new ApiConfigInfoBean<>(clz, url);
+        ApiConfigInfoBean<T> infoBean = new ApiConfigInfoBean<>(clz, url,client);
         Object o = map.get(infoBean);
         if (o == null) {
             o = new Retrofit.Builder()
