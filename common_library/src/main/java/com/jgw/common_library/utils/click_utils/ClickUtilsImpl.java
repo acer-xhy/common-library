@@ -32,10 +32,8 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
     private CustomRecyclerAdapter<?>.ContentViewHolder<? extends ViewDataBinding> mViewHolder;
     private boolean isSingleClick;
     private boolean isDoubleClick;
-    private boolean isLongClick;
     private boolean isItemSingleClick;
     private boolean isItemDoubleClick;
-    private boolean isItemLongClick;
 
     public void setSingleClick(boolean singleClick) {
         isSingleClick = singleClick;
@@ -43,10 +41,6 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
 
     public void setDoubleClick(boolean doubleClick) {
         isDoubleClick = doubleClick;
-    }
-
-    public void setLongClick(boolean longClick) {
-        isLongClick = longClick;
     }
 
     public void setItemSingleClick(boolean itemSingleClick) {
@@ -57,10 +51,6 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
         isItemDoubleClick = itemDoubleClick;
     }
 
-    public void setItemLongClick(boolean itemLongClick) {
-        isItemLongClick = itemLongClick;
-    }
-
     private View lastClickView;
 
     public void clear() {
@@ -69,12 +59,14 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
 
     private static final int tagKey = R.string.key_tag;
 
+    private final long DEFAULT_DOUBLE_HIT_TIME = 500;
+    private long mDoubleHitTime = DEFAULT_DOUBLE_HIT_TIME;
+
     @Override
     public void onClick(View v) {
         LogUtils.xswShowLog("onClick--------------------------------");
         //        long currentTimeMillis = System.currentTimeMillis();
         long currentTimeMillis = System.nanoTime() / 1000000L;
-        long doubleHitTime = 500;
         boolean switchClick;
         long lastTime;
         Object tag = v.getTag(tagKey);
@@ -88,7 +80,7 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
             } else {
                 lastTime = (long) tag;
                 long l = currentTimeMillis - lastTime;
-                switchClick = l > doubleHitTime;
+                switchClick = l > mDoubleHitTime;
             }
         }
         lastClickView = v;
@@ -99,7 +91,7 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
                     v.setTag(tagKey, currentTimeMillis);
                 } else {
                     lastTime = (long) tag;
-                    if (currentTimeMillis - lastTime < doubleHitTime) {
+                    if (currentTimeMillis - lastTime < mDoubleHitTime) {
                         mOnItemDoubleClickListener.onItemDoubleClick(v, mViewHolder.getAdapterPosition());
                         lastTime = 0;
                         v.setTag(tagKey, lastTime);
@@ -125,7 +117,7 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
                 v.setTag(tagKey, currentTimeMillis);
             } else {
                 lastTime = (long) tag;
-                if (currentTimeMillis - lastTime < doubleHitTime) {
+                if (currentTimeMillis - lastTime < mDoubleHitTime) {
                     mOnDoubleClickListener.onDoubleClick(v);
                     lastTime = 0;
                     v.setTag(tagKey, lastTime);
@@ -178,4 +170,10 @@ class ClickUtilsImpl implements View.OnClickListener, View.OnLongClickListener {
         }
     }
 
+    public void setDoubleHitTime(long doubleHitTime) {
+        mDoubleHitTime = doubleHitTime;
+    }
+    public long getDoubleHitTime() {
+        return mDoubleHitTime;
+    }
 }

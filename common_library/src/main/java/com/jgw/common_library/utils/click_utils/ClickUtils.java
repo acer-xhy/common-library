@@ -119,10 +119,14 @@ public class ClickUtils {
 
         public ClickManager addOnLongClickListener() {
             isLongClick = true;
-            mListenerImpl.setLongClick(true);
             mListenerImpl.setOnLongTimeClickListener((OnLongTimeClickListener) mListener);
             return this;
 
+        }
+
+        public ClickManager setDoubleHitTime(long time) {
+            mListenerImpl.setDoubleHitTime(time);
+            return this;
         }
 
         public void submit() {
@@ -181,7 +185,6 @@ public class ClickUtils {
 
         public ItemClickManager addOnItemLongClickListener() {
             isItemLongClick = true;
-            mListenerImpl.setItemLongClick(true);
             mListenerImpl.setOnItemLongTimeClickListener((OnItemLongTimeClickListener) mListener);
             return this;
         }
@@ -197,6 +200,11 @@ public class ClickUtils {
             isItemSingleClick = true;
             mListenerImpl.setItemSingleClick(true);
             mListenerImpl.setOnItemSingleClickListener((OnItemSingleClickListener) mListener);
+            return this;
+        }
+
+        public ItemClickManager setDoubleHitTime(long time) {
+            mListenerImpl.setDoubleHitTime(time);
             return this;
         }
 

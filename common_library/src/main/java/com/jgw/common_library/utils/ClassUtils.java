@@ -17,24 +17,18 @@ public class ClassUtils {
      * 获取泛型ViewModel的class对象
      */
     public static <T> Class<T> getViewModel(Object obj) {
-        Class<?> currentClass = obj.getClass();
-        Class<T> tClass = getGenericClass(currentClass, AndroidViewModel.class);
-        if (tClass == null || tClass == AndroidViewModel.class) {
-            return null;
-        }
-        return tClass;
+        //noinspection unchecked
+        Class<T> t= (Class<T>) AndroidViewModel.class;
+        return getClassBySuperClass(obj,t);
     }
 
     public static <T> Class<T> getViewBinding(Object obj) {
-        Class<?> currentClass = obj.getClass();
-        Class<T> tClass = getGenericClass(currentClass, ViewDataBinding.class);
-        if (tClass == null || tClass == ViewDataBinding.class) {
-            return null;
-        }
-        return tClass;
+        //noinspection unchecked
+        Class<T> t= (Class<T>) ViewDataBinding.class;
+        return getClassBySuperClass(obj,t);
     }
 
-    public static <T> Class<T> getClassBySuperClass(Object obj,Class<T> clazz) {
+    public static <T> Class<T> getClassBySuperClass(Object obj, Class<T> clazz) {
         Class<?> currentClass = obj.getClass();
         Class<T> tClass = getGenericClass(currentClass, clazz);
         if (tClass == null || tClass == clazz) {
@@ -43,7 +37,6 @@ public class ClassUtils {
         return tClass;
     }
 
-    @SuppressWarnings("SameParameterValue")
     private static <T> Class<T> getGenericClass(Class<?> klass, Class<?> filterClass) {
         Type type = klass.getGenericSuperclass();
         if (!(type instanceof ParameterizedType)) {
@@ -53,15 +46,15 @@ public class ClassUtils {
         Type[] types = parameterizedType.getActualTypeArguments();
         for (Type t : types) {
             Class<T> tClass;
-            if (t instanceof Class) {
-            //noinspection unchecked
-                tClass = (Class<T>) t;
-            }else {
+            if (!(t instanceof Class)) {
                 return null;
             }
-            if (filterClass.isAssignableFrom(tClass)) {
-                return tClass;
+            //noinspection unchecked
+            tClass = (Class<T>) t;
+            if (!filterClass.isAssignableFrom(tClass)) {
+                continue;
             }
+            return tClass;
         }
         return null;
     }
