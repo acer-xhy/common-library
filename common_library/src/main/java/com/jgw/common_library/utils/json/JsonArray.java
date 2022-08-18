@@ -80,6 +80,10 @@ public class JsonArray {
         return ja.getBooleanValue(index);
     }
 
+    public int size() {
+        return ja.size();
+    }
+
     public JsonObject getJsonObject(int index) {
         JSONObject jsonObject = ja.getJSONObject(index);
         return new JsonObject(jsonObject);
