@@ -21,8 +21,9 @@ ext {
             arouter_compiler = "1.5.2",
             eventbus = "3.3.1",
             picker_view = "3.2.5",
+            umeng_common = "9.5.2",
             umsdk_asms = "1.6.3",
-            umeng_common = "9.5.0",
+            umeng_apm = "1.7.0",
             mmkv = "1.2.13",
             xxpermissions = "13.6",
             toast = "9.1"
@@ -54,8 +55,9 @@ ext {
 
             picker_view               : "com.contrarywind:Android-PickerView:$picker_view",
 
-            umsdk_asms                : "com.umeng.umsdk:asms:$umsdk_asms",
             umeng_common              : "com.umeng.umsdk:common:$umeng_common",
+            umsdk_asms                : "com.umeng.umsdk:asms:$umsdk_asms",
+            umeng_apm                 : "com.umeng.umsdk:apm:$umeng_apm",
 
             mmkv                      : "com.tencent:mmkv-static:$mmkv",
             xxpermissions             : "com.github.getActivity:XXPermissions:$xxpermissions",
