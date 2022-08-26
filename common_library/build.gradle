@@ -50,6 +50,7 @@ dependencies {
 
     api dep.umsdk_asms
     api dep.umeng_common
+    api dep.umeng_apm
 
     api dep.mmkv
     api dep.xxpermissions
