@@ -1,6 +1,5 @@
 package com.jgw.common_library.widget.loadingDialog;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,13 +8,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.jgw.common_library.R;
+import com.jgw.common_library.base.ui.BaseActivity;
+import com.jgw.common_library.http.rxjava.CustomObserver;
+import com.jgw.common_library.utils.LogUtils;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 圆形进度条控件
@@ -23,11 +33,17 @@ import com.jgw.common_library.R;
 
 public class CircularProgressView extends View {
 
-    private Paint mBackPaint, mProgressPaint;   // 绘制画笔
+    private final Paint mBackPaint;
+    private final Paint mProgressPaint;   // 绘制画笔
     private int mProgress;      // 圆环进度(0-100)
     private int mRectLength;
     private int mRectL;
     private int mRectT;
+    private int progressMode;//0无限旋转 1进度模式
+    private Disposable mDisposable;
+    private int showProgress;
+    private final int frame = 60;
+    private boolean mThreadStop;
 
     public CircularProgressView(Context context) {
         this(context, null);
@@ -48,7 +64,7 @@ public class CircularProgressView extends View {
         mBackPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mBackPaint.setAntiAlias(true);              // 设置抗锯齿
         mBackPaint.setDither(true);                 // 设置抖动
-        mBackPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5));
+        mBackPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.xMultiple);
         mBackPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_backColor, Color.LTGRAY));
 
         // 初始化进度圆环画笔
@@ -57,15 +73,8 @@ public class CircularProgressView extends View {
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mProgressPaint.setAntiAlias(true);              // 设置抗锯齿
         mProgressPaint.setDither(true);                 // 设置抖动
-        mProgressPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_progWidth, 10));
+        mProgressPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.xMultiple);
         mProgressPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_progColor, Color.BLUE));
-
-        // 初始化进度圆环渐变色
-//        int startColor = typedArray.getColor(R.styleable.CircularProgressView_progStartColor, -1);
-//        int firstColor = typedArray.getColor(R.styleable.CircularProgressView_progFirstColor, -1);
-//        if (startColor != -1 && firstColor != -1) mColorArray = new int[]{startColor, firstColor};
-//        else mColorArray = null;
-
         // 初始化进度
         mProgress = typedArray.getInteger(R.styleable.CircularProgressView_progress, 0);
         typedArray.recycle();
@@ -79,20 +88,73 @@ public class CircularProgressView extends View {
         mRectLength = (int) ((Math.min(viewWide, viewHigh)) - (Math.max(mBackPaint.getStrokeWidth(), mProgressPaint.getStrokeWidth())));
         mRectL = getPaddingLeft() + (viewWide - mRectLength) / 2;
         mRectT = getPaddingTop() + (viewHigh - mRectLength) / 2;
-
-        // 设置进度圆环渐变色
-//        if (mColorArray != null && mColorArray.length > 1)
-//            mProgPaint.setShader(new LinearGradient(0, 0, 0, getMeasuredWidth(), mColorArray, null, Shader.TileMode.MIRROR));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRectL, mRectT, mRectL + mRectLength, mRectT + mRectLength, 0, 360, false, mBackPaint);
-        canvas.drawArc(mRectL, mRectT, mRectL + mRectLength, mRectT + mRectLength, 275, 360 * mProgress / 100f, false, mProgressPaint);
+        canvas.drawArc(mRectL, mRectT, mRectL + mRectLength, mRectT + mRectLength, getStartAngle(), getSweepAngle(), false, mProgressPaint);
     }
 
-    // ---------------------------------------------------------------------------------------------
+    private float getSweepAngle() {
+        if (progressMode == 1) {
+            return 360 * showProgress / (100f * 10);
+        } else {
+            return 90;
+        }
+    }
+
+    private int getStartAngle() {
+        if (progressMode == 1) {
+            return 270;
+        } else {
+            return (int) (mProgress * 3.6);
+        }
+    }
+
+    public void setProgressMode(int progressMode) {
+        this.progressMode = progressMode;
+        if (progressMode==1){
+            updateProgressThread.start();
+        }
+    }
+
+    public void startRotate() {
+        Observable.interval(1000 / frame, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<Long, Integer>() {
+                    int frame;
+
+                    @Override
+                    public Integer apply(Long aLong) {
+                        frame++;
+                        return frame % 100;
+                    }
+                })
+                .subscribe(new CustomObserver<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        super.onSubscribe(d);
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        mProgress = i;
+                        invalidate();
+                    }
+                });
+    }
+
+    public void stopRotate() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+        mDisposable = null;
+        mThreadStop = true;
+    }
 
     /**
      * 获取当前进度
@@ -103,75 +165,68 @@ public class CircularProgressView extends View {
         return mProgress;
     }
 
+    private final ArrayDeque<List<Integer>> queue = new ArrayDeque<>();
+
     /**
      * 设置当前进度
-     *
+     * 更新频率每秒更新一次 设置频率应和更新频率一致
      * @param progress 当前进度（0-100）
      */
     public void setProgress(int progress) {
-        this.mProgress = progress;
-        invalidate();
-    }
-
-    /**
-     * 设置当前进度，并展示进度动画。如果动画时间小于等于0，则不展示动画
-     *
-     * @param progress 当前进度（0-100）
-     * @param animTime 动画时间（毫秒）
-     */
-    public void setProgress(int progress, long animTime) {
-        if (animTime <= 0) setProgress(progress);
-        else {
-            ValueAnimator animator = ValueAnimator.ofInt(mProgress, progress);
-            animator.addUpdateListener(animation -> {
-                mProgress = (int) animation.getAnimatedValue();
-                invalidate();
-            });
-            animator.setInterpolator(new OvershootInterpolator());
-            animator.setDuration(animTime);
-            animator.start();
+        if (progress == mProgress) {
+            return;
+        }
+        if (progress > mProgress) {
+            int lastProgress = mProgress;
+            this.mProgress = progress;
+            ArrayList<Integer> integers = new ArrayList<>();
+            for (int i = 1; i <= frame; i++) {
+                int offset = (progress - lastProgress) * 10;
+                int frameData = (int) (offset / 60f * i);
+                integers.add(lastProgress * 10 + frameData);
+            }
+            queue.add(integers);
+        } else {
+            mProgress = progress;
+            showProgress = mProgress * 10;
+            invalidate();
         }
     }
 
-    /**
-     * 设置背景圆环宽度
-     *
-     * @param width 背景圆环宽度
-     */
-    public void setBackWidth(int width) {
-        mBackPaint.setStrokeWidth(width);
-        invalidate();
-    }
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Thread updateProgressThread = new Thread() {
+        @Override
+        public void run() {
+            while (!mThreadStop) {
+                if (queue.isEmpty()) {
+                    try {
+                        //noinspection BusyWait
+                        sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+                List<Integer> pop = queue.pop();
+                int frameTime = 1000 / frame;
+                int lastShowProgress = -1;
+                for (int i = 0; i < pop.size(); i++) {
+                    int showProgress = pop.get(i);
+                    try {
+                        //noinspection BusyWait
+                        sleep(frameTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (lastShowProgress == showProgress) {
+                        continue;
+                    }
+                    CircularProgressView.this.showProgress = showProgress;
+                    LogUtils.xswShowLog("showProgress=" + showProgress);
+                    post(() -> invalidate());
+                }
 
-    /**
-     * 设置背景圆环颜色
-     *
-     * @param color 背景圆环颜色
-     */
-    public void setBackColor(@ColorRes int color) {
-        mBackPaint.setColor(ContextCompat.getColor(getContext(), color));
-        invalidate();
-    }
-
-    /**
-     * 设置进度圆环宽度
-     *
-     * @param width 进度圆环宽度
-     */
-    public void setProgWidth(int width) {
-        mProgressPaint.setStrokeWidth(width);
-        invalidate();
-    }
-
-    /**
-     * 设置进度圆环颜色
-     *
-     * @param color 景圆环颜色
-     */
-    public void setProgColor(@ColorRes int color) {
-        mProgressPaint.setColor(ContextCompat.getColor(getContext(), color));
-        mProgressPaint.setShader(null);
-        invalidate();
-    }
-
+            }
+        }
+    };
 }

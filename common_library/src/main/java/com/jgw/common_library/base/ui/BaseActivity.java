@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.viewmodel.BaseViewModel;
+import com.jgw.common_library.bean.ProgressDialogBean;
 import com.jgw.common_library.utils.ClassUtils;
 import com.jgw.common_library.utils.LogUtils;
 import com.jgw.common_library.utils.click_utils.ClickUtils;
@@ -50,6 +51,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     private boolean isShowing;
     public static int mPhoneWidth;
     public static int mPhoneHeight;
+    private ProgressDialogBean mProgressDialogBean;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -246,8 +248,16 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     }
 
     public void showLoadingDialog() {
+        showLoadingDialog(-1);
+    }
+
+    public void showLoadingDialog(int progressType) {
+        if (mDialog != null && progressType != mDialog.getProgressType()) {
+            dismissLoadingDialog();
+        }
         if (mDialog == null) {
-            mDialog = CircularProgressDialogFragment.newInstance(-1);
+            mDialog = CircularProgressDialogFragment.newInstance(progressType);
+            mProgressDialogBean = mDialog.getProgressDialogBean();
             mDialog.setCancelable(false);
         }
         if (!isShowing && !mDialog.isAdded()) {
@@ -262,7 +272,13 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
             mDialog.dismiss();
         }
         removeTransparentBackground();
-        isShowing=false;
+        isShowing = false;
+        mDialog=null;
+    }
+
+    @Nullable
+    public ProgressDialogBean getProgressDialogBean() {
+        return mProgressDialogBean;
     }
 
     @Override
