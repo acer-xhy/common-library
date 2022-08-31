@@ -14,11 +14,8 @@ import androidx.annotation.Nullable;
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.ui.BaseActivity;
 import com.jgw.common_library.http.rxjava.CustomObserver;
-import com.jgw.common_library.utils.LogUtils;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -35,15 +32,12 @@ public class CircularProgressView extends View {
 
     private final Paint mBackPaint;
     private final Paint mProgressPaint;   // 绘制画笔
-    private int mProgress;      // 圆环进度(0-100)
+    private float mProgress;      // 圆环进度(0-100)
     private int mRectLength;
     private int mRectL;
     private int mRectT;
     private int progressMode;//0无限旋转 1进度模式
     private Disposable mDisposable;
-    private int showProgress;
-    private final int frame = 60;
-    private boolean mThreadStop;
 
     public CircularProgressView(Context context) {
         this(context, null);
@@ -99,7 +93,7 @@ public class CircularProgressView extends View {
 
     private float getSweepAngle() {
         if (progressMode == 1) {
-            return 360 * showProgress / (100f * 10);
+            return 360 * mProgress / (100f);
         } else {
             return 90;
         }
@@ -115,25 +109,23 @@ public class CircularProgressView extends View {
 
     public void setProgressMode(int progressMode) {
         this.progressMode = progressMode;
-        if (progressMode==1){
-            updateProgressThread.start();
-        }
     }
 
     public void startRotate() {
-        Observable.interval(1000 / frame, TimeUnit.MILLISECONDS)
+        Observable.interval(1000 / 60, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<Long, Integer>() {
-                    int frame;
+                .map(new Function<Long, Float>() {
+                    float frame;
 
                     @Override
-                    public Integer apply(Long aLong) {
+                    public Float apply(Long aLong) {
+                        frame = frame > 100 ? 0 : frame;
                         frame++;
-                        return frame % 100;
+                        return frame;
                     }
                 })
-                .subscribe(new CustomObserver<Integer>() {
+                .subscribe(new CustomObserver<Float>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         super.onSubscribe(d);
@@ -141,7 +133,7 @@ public class CircularProgressView extends View {
                     }
 
                     @Override
-                    public void onNext(Integer i) {
+                    public void onNext(Float i) {
                         mProgress = i;
                         invalidate();
                     }
@@ -153,7 +145,6 @@ public class CircularProgressView extends View {
             mDisposable.dispose();
         }
         mDisposable = null;
-        mThreadStop = true;
     }
 
     /**
@@ -161,72 +152,48 @@ public class CircularProgressView extends View {
      *
      * @return 当前进度（0-100）
      */
-    public int getProgress() {
+    public float getProgress() {
         return mProgress;
     }
-
-    private final ArrayDeque<List<Integer>> queue = new ArrayDeque<>();
 
     /**
      * 设置当前进度
      * 更新频率每秒更新一次 设置频率应和更新频率一致
+     *
      * @param progress 当前进度（0-100）
      */
     public void setProgress(int progress) {
-        if (progress == mProgress) {
+        float v = progress - mProgress;
+        if (v == 0) {
             return;
         }
-        if (progress > mProgress) {
-            int lastProgress = mProgress;
-            this.mProgress = progress;
-            ArrayList<Integer> integers = new ArrayList<>();
-            for (int i = 1; i <= frame; i++) {
-                int offset = (progress - lastProgress) * 10;
-                int frameData = (int) (offset / 60f * i);
-                integers.add(lastProgress * 10 + frameData);
-            }
-            queue.add(integers);
+        if (v > 0) {
+            setProgressRange((int) v);
         } else {
             mProgress = progress;
-            showProgress = mProgress * 10;
             invalidate();
         }
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final Thread updateProgressThread = new Thread() {
-        @Override
-        public void run() {
-            while (!mThreadStop) {
-                if (queue.isEmpty()) {
-                    try {
-                        //noinspection BusyWait
-                        sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    continue;
-                }
-                List<Integer> pop = queue.pop();
-                int frameTime = 1000 / frame;
-                int lastShowProgress = -1;
-                for (int i = 0; i < pop.size(); i++) {
-                    int showProgress = pop.get(i);
-                    try {
-                        //noinspection BusyWait
-                        sleep(frameTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (lastShowProgress == showProgress) {
-                        continue;
-                    }
-                    CircularProgressView.this.showProgress = showProgress;
-                    LogUtils.xswShowLog("showProgress=" + showProgress);
-                    post(() -> invalidate());
-                }
-
-            }
+    public void setProgressRange(int range) {
+        float currentProgress = this.mProgress;
+        ArrayList<Float> floats = new ArrayList<>();
+        for (int i = 0; i < range; i++) {
+            float f = currentProgress + (range / 10f * i);
+            floats.add(f);
         }
-    };
+        Observable<Long> interval = Observable.interval(10, TimeUnit.MILLISECONDS);
+        Observable<Float> floatObservable = Observable.fromIterable(floats);
+        Observable.zip(interval, floatObservable, (aLong, aFloat) -> aFloat)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CustomObserver<Float>() {
+                    @Override
+                    public void onNext(Float f) {
+                        mProgress = f;
+                        invalidate();
+                    }
+                });
+    }
+
 }

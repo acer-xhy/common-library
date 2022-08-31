@@ -160,10 +160,14 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
     }
 
     public void showLoadingDialog() {
+        showLoadingDialog(-1);
+    }
+
+    public void showLoadingDialog(int progressType) {
         FragmentActivity activity = getActivity();
         if (activity instanceof BaseActivity){
             //noinspection rawtypes
-            ((BaseActivity) activity).showLoadingDialog();
+            ((BaseActivity) activity).showLoadingDialog(progressType);
         }
     }
 
