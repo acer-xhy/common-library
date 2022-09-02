@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="data"
-            type="com.jgw.common_library.bean.ProgressDialogBean" />
-    </data>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -33,14 +26,13 @@
                     android:layout_height="match_parent"
                     app:backColor="#BDE3FF"
                     app:backWidth="5dp"
-                    app:progColor="@color/main_color"
-                    app:progress="@{data.progress}" />
+                    app:progColor="@color/main_color" />
 
                 <TextView
+                    android:id="@+id/tv_dialog_fragment_percentage_loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@{data.progressText}"
                     android:textColor="@color/main_color"
                     android:textSize="20sp"
                     tools:text="99" />
@@ -48,13 +40,13 @@
             </RelativeLayout>
 
             <TextView
+                android:id="@+id/tv_dialog_fragment_percentage_loading_tips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="40dp"
                 android:includeFontPadding="false"
-                android:text="@{data.tips}"
                 android:textColor="@color/gray_66"
                 android:textSize="14sp"
                 tools:text="正在上传,请耐心等候哦~" />

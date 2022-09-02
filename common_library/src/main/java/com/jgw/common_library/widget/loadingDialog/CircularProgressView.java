@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.ui.BaseActivity;
 import com.jgw.common_library.http.rxjava.CustomObserver;
+import com.jgw.common_library.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +39,10 @@ public class CircularProgressView extends View {
     private int mRectT;
     private int progressMode;//0无限旋转 1进度模式
     private Disposable mDisposable;
+    private CircularProgressDialogFragment.OnLoadingProgressFinishListener mListener;
+    private boolean mUseProgressRange;
+    private int mCount;
+    private int mTotal;
 
     public CircularProgressView(Context context) {
         this(context, null);
@@ -145,6 +150,36 @@ public class CircularProgressView extends View {
             mDisposable.dispose();
         }
         mDisposable = null;
+        mListener = null;
+    }
+
+    public void setCount(int count) {
+        if (mCount == count && count != 0) {
+            return;
+        }
+        mCount = Math.min(count, mTotal);
+        setProgress(getProgress());
+    }
+
+    public void addCount(int count) {
+        mCount += count;
+        setProgress(getProgress());
+    }
+
+    public void setTotal(int total) {
+        if (mTotal == total) {
+            return;
+        }
+        mTotal = Math.max(total, mCount);
+        setProgress(getProgress());
+    }
+
+    public int getCount() {
+        return mCount;
+    }
+
+    public int getTotal() {
+        return mTotal;
     }
 
     /**
@@ -153,7 +188,10 @@ public class CircularProgressView extends View {
      * @return 当前进度（0-100）
      */
     public float getProgress() {
-        return mProgress;
+        if (mTotal == 0) {
+            return 0;
+        }
+        return (int) (MathUtils.div(mCount, mTotal, 2) * 100);
     }
 
     /**
@@ -162,16 +200,27 @@ public class CircularProgressView extends View {
      *
      * @param progress 当前进度（0-100）
      */
-    public void setProgress(int progress) {
+    public void setProgress(float progress) {
         float v = progress - mProgress;
         if (v == 0) {
             return;
         }
-        if (v > 0) {
+        if (mUseProgressRange && v > 0) {
             setProgressRange((int) v);
         } else {
             mProgress = progress;
             invalidate();
+        }
+        if (mListener != null && mProgress == 100) {
+            Observable.timer(100, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CustomObserver<Long>() {
+                        @Override
+                        public void onNext(Long aLong) {
+                            mListener.onFinish();
+                        }
+                    });
+
         }
     }
 
@@ -182,18 +231,39 @@ public class CircularProgressView extends View {
             float f = currentProgress + (range / 10f * i);
             floats.add(f);
         }
-        Observable<Long> interval = Observable.interval(10, TimeUnit.MILLISECONDS);
+        Observable<Long> interval = Observable.interval(0, 10, TimeUnit.MILLISECONDS);
         Observable<Float> floatObservable = Observable.fromIterable(floats);
         Observable.zip(interval, floatObservable, (aLong, aFloat) -> aFloat)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomObserver<Float>() {
+                .map(f -> {
+                    String name = Thread.currentThread().getName();
+                    mProgress = f;
+                    invalidate();
+                    return f;
+                })
+                .observeOn(Schedulers.io())
+                .map(f -> {
+                    if (f == 100) {
+                        Thread.sleep(100);
+                    }
+                    return f == 100;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void onNext(Float f) {
-                        mProgress = f;
-                        invalidate();
+                    public void onNext(Boolean f) {
+                        if (f) {
+                            mListener.onFinish();
+                        }
                     }
                 });
     }
 
+    public void setLoadingProgressFinishListener(CircularProgressDialogFragment.OnLoadingProgressFinishListener listener) {
+        mListener = listener;
+    }
+
+    public void setUseProgressRange(boolean useProgressRange) {
+        mUseProgressRange = useProgressRange;
+    }
 }

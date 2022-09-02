@@ -1,142 +1,206 @@
 package com.jgw.common_library.widget.loadingDialog;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
+import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.jgw.common_library.R;
-import com.jgw.common_library.bean.ProgressDialogBean;
 import com.jgw.common_library.databinding.DialogFragmentCountLoadingBinding;
 import com.jgw.common_library.databinding.DialogFragmentCycleLoadingBinding;
 import com.jgw.common_library.databinding.DialogFragmentPercentageLoadingBinding;
 
-public class CircularProgressDialogFragment extends DialogFragment {
+public class CircularProgressDialogFragment extends Dialog {
 
-    private final ProgressDialogBean mProgressDialogBean;
-
-    private DialogInterface.OnDismissListener mOnDismissListener;
     private ViewDataBinding view;
-    private int progressType = -1;
+    private int progressType;
 
-    private CircularProgressDialogFragment() {
-        mProgressDialogBean = new ProgressDialogBean();
+    public CircularProgressDialogFragment(@NonNull Context context) {
+        super(context);
     }
 
-    public static CircularProgressDialogFragment newInstance() {
-        return CircularProgressDialogFragment.newInstance(-1);
+    public CircularProgressDialogFragment(@NonNull Context context, int themeResId) {
+        super(context, themeResId);
+    }
+
+    public CircularProgressDialogFragment(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
+    }
+
+    public static CircularProgressDialogFragment newInstance(Context context) {
+        return CircularProgressDialogFragment.newInstance(context, -1);
     }
 
     /**
      * @param progressType -1无限循环 1百分比进度 2计数进度
      * @return
      */
-    public static CircularProgressDialogFragment newInstance(int progressType) {
-        CircularProgressDialogFragment fragment = new CircularProgressDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("progressType", progressType);
-        fragment.setArguments(args);
-        return fragment;
+    public static CircularProgressDialogFragment newInstance(Context context, int progressType) {
+        CircularProgressDialogFragment dialogFragment = new CircularProgressDialogFragment(context, R.style.CustomDialog);
+        dialogFragment.setProgressType(progressType);
+        return dialogFragment;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        FragmentActivity activity = getActivity();
-        if (activity == null) {
-            setShowsDialog(false);
-            //noinspection ConstantConditions
-            return null;
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            progressType = arguments.getInt("progressType");
-        }
-        Dialog dialog = new Dialog(activity,R.style.CustomDialog);
+    private void setProgressType(int progressType) {
+        this.progressType = progressType;
         switch (progressType) {
             case 1:
-                view = buildPercentageDialogView(activity);
+                view = buildPercentageDialogView();
                 break;
             case 2:
-                view = buildCountDialogView(activity);
+                view = buildCountDialogView();
                 break;
             default:
-                view = buildCycleDialogView(activity);
+                view = buildCycleDialogView();
         }
-        dialog.setContentView(view.getRoot());
-        return dialog;
+        setContentView(view.getRoot());
+        setCount(0);
+        setTips("加载中,请等待...");
     }
 
-    private ViewDataBinding buildCycleDialogView(FragmentActivity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
+    private ViewDataBinding buildCycleDialogView() {
+        LayoutInflater inflater = getLayoutInflater();
         DialogFragmentCycleLoadingBinding viewDataBinding = DataBindingUtil.inflate(inflater
                 , R.layout.dialog_fragment_cycle_loading, null, false);
-        viewDataBinding.cpvFragmentLoading.setProgressMode(0);
-        viewDataBinding.cpvFragmentLoading.startRotate();
-        viewDataBinding.setData(mProgressDialogBean);
+        viewDataBinding.cpvDialogFragmentCycleLoading.setProgressMode(0);
+        viewDataBinding.cpvDialogFragmentCycleLoading.startRotate();
         return viewDataBinding;
     }
 
-    private ViewDataBinding buildPercentageDialogView(FragmentActivity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
+    private ViewDataBinding buildPercentageDialogView() {
+        LayoutInflater inflater = getLayoutInflater();
         DialogFragmentPercentageLoadingBinding viewDataBinding = DataBindingUtil.inflate(inflater
                 , R.layout.dialog_fragment_percentage_loading, null, false);
-        mProgressDialogBean.setTotal(100);
-        viewDataBinding.setData(mProgressDialogBean);
         viewDataBinding.cpvDialogFragmentPercentageLoading.setProgressMode(1);
+        viewDataBinding.cpvDialogFragmentPercentageLoading.setTotal(100);
         return viewDataBinding;
     }
 
-    private ViewDataBinding buildCountDialogView(FragmentActivity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
-        DialogFragmentCountLoadingBinding viewDataBinding = DataBindingUtil.inflate(inflater
+    private ViewDataBinding buildCountDialogView() {
+        LayoutInflater inflater = getLayoutInflater();
+        return DataBindingUtil.inflate(inflater
                 , R.layout.dialog_fragment_count_loading, null, false);
-        viewDataBinding.setData(mProgressDialogBean);
-        return viewDataBinding;
-    }
-
-    public void setOnDismissListener(DialogInterface.OnDismissListener mOnDismissListener) {
-        this.mOnDismissListener = mOnDismissListener;
     }
 
     public void setCount(int count) {
-        mProgressDialogBean.setCount(count);
+        switch (progressType) {
+            case 1:
+                setPercentageLoadingCount(count);
+                break;
+            case 2:
+                setCountLoadingCount(count);
+                break;
+            default:
+                setCycleLoadingCount(count);
+        }
+    }
+
+    public void addCount(int count) {
+        setCount(getCount() + count);
+    }
+
+    public int getCount() {
+        switch (progressType) {
+            case 1:
+                return ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading.getCount();
+            case 2:
+                return ((DialogFragmentCountLoadingBinding) view).pbDialogFragmentCountLoading.getProgress();
+            default:
+                return 0;
+        }
+    }
+
+    private void setCycleLoadingCount(int count) {
+        //something
+    }
+
+    private void setPercentageLoadingCount(int count) {
+        CircularProgressView progressView = ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading;
+        progressView.setCount(count);
+
+        String source = (int) progressView.getProgress() + "%";
+        SpannableString span = new SpannableString(source);
+        span.setSpan(new AbsoluteSizeSpan(12, true), source.length() - 1, source.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ((DialogFragmentPercentageLoadingBinding) view).tvDialogFragmentPercentageLoading.setText(span);
+    }
+
+    private void setCountLoadingCount(int count) {
+        ((DialogFragmentCountLoadingBinding) view).pbDialogFragmentCountLoading.setProgress(count);
+        ((DialogFragmentCountLoadingBinding) view).tvDialogFragmentCountLoadingCount.setText(String.valueOf(count));
     }
 
     public void setTotal(int total) {
-        mProgressDialogBean.setTotal(total);
+        switch (progressType) {
+            case 1:
+                setPercentageLoadingTotal(total);
+                break;
+            case 2:
+                setTotalLoadingTotal(total);
+                break;
+            default:
+                setCycleLoadingTotal(total);
+        }
     }
+
+    private void setCycleLoadingTotal(int total) {
+    }
+
+    private void setPercentageLoadingTotal(int total) {
+        ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading.setTotal(total);
+    }
+
+    private void setTotalLoadingTotal(int total) {
+        ((DialogFragmentCountLoadingBinding) view).pbDialogFragmentCountLoading.setProgress(total);
+    }
+
 
     public void setTips(String tip) {
-        mProgressDialogBean.setTips(tip);
+        switch (progressType) {
+            case 1:
+                ((DialogFragmentPercentageLoadingBinding) view).tvDialogFragmentPercentageLoadingTips.setText(tip);
+                break;
+            case 2:
+                ((DialogFragmentCountLoadingBinding) view).tvDialogFragmentCountLoadingTips.setText(tip);
+                break;
+            default:
+                ((DialogFragmentCycleLoadingBinding) view).tvDialogFragmentCycleLoadingTips.setText(tip);
+        }
     }
 
-    public ProgressDialogBean getProgressDialogBean() {
-        return mProgressDialogBean;
+    public void setLoadProgressFinishListener(OnLoadingProgressFinishListener listener) {
+        if (view instanceof DialogFragmentPercentageLoadingBinding) {
+            ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading.setLoadingProgressFinishListener(listener);
+        }
     }
 
+    public void setUseProgressRange(boolean useProgressRange) {
+        if (view instanceof DialogFragmentPercentageLoadingBinding) {
+            ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading.setUseProgressRange(useProgressRange);
+        }
+    }
 
     public int getProgressType() {
         return progressType;
     }
 
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (mOnDismissListener != null) {
-            mOnDismissListener.onDismiss(dialog);
-        }
+    public void dismiss() {
+        super.dismiss();
         if (view instanceof DialogFragmentCycleLoadingBinding) {
-            ((DialogFragmentCycleLoadingBinding) view).cpvFragmentLoading.stopRotate();
-        }else if ( view instanceof DialogFragmentPercentageLoadingBinding){
+            ((DialogFragmentCycleLoadingBinding) view).cpvDialogFragmentCycleLoading.stopRotate();
+        } else if (view instanceof DialogFragmentPercentageLoadingBinding) {
             ((DialogFragmentPercentageLoadingBinding) view).cpvDialogFragmentPercentageLoading.stopRotate();
         }
+    }
+
+    public interface OnLoadingProgressFinishListener {
+        void onFinish();
     }
 }
