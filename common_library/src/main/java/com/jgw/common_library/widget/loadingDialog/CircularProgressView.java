@@ -1,6 +1,5 @@
 package com.jgw.common_library.widget.loadingDialog;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -31,8 +30,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class CircularProgressView extends View {
 
-    private final Paint mBackPaint;
-    private final Paint mProgressPaint;   // 绘制画笔
+    private Paint mBackPaint;
+    private Paint mProgressPaint;   // 绘制画笔
     private float mProgress;      // 圆环进度(0-100)
     private int mRectLength;
     private int mRectL;
@@ -50,13 +49,16 @@ public class CircularProgressView extends View {
 
     public CircularProgressView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+        init(context, attrs);
     }
 
     public CircularProgressView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        @SuppressLint("Recycle")
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
+        init(context, attrs);
+    }
 
+    private void init(Context context, @Nullable AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
         // 初始化背景圆环画笔
         mBackPaint = new Paint();
         mBackPaint.setStyle(Paint.Style.STROKE);    // 只描边，不填充

@@ -14,12 +14,13 @@
     <color name="gray_bb">#BBBBBB</color>
     <color name="gray_91">#919191</color>
     <color name="gray_66">#666666</color>
+    <color name="gray_99">#999999</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="blue">#26A2FF</color>
-    <color name="setting_black">#333333</color>
-    <color name="setting_text">#999999</color>
-    <color name="setting_version">#666666</color>
+    <color name="setting_black">@color/gray_33</color>
+    <color name="setting_text">@color/gray_99</color>
+    <color name="setting_version">@color/gray_66</color>
     <color name="transparent_background">#aa333333</color>
 </resources>
