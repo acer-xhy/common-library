@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
@@ -55,6 +56,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
     protected List<T> mList;
     public Fragment mFragment;
     private WeakReference<RecyclerView> mRecyclerViewReference;
+    private int mHeightSplit;
 
 
     public void setOnItemClickListener(OnItemSingleClickListener listener) {
@@ -84,7 +86,30 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
                 mRecyclerViewReference = new WeakReference<>((RecyclerView) parent);
             }
         }
+        ContentViewHolder<? extends ViewDataBinding> holder = onCreateCustomViewHolder(parent, viewType);
+        if (getHeightSplit() !=0){
+            parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                boolean calculated =false;
+                @Override
+                public void onGlobalLayout() {
+                    if (calculated){
+                        return;
+                    }
+                    int parentHeight = parent.getHeight();
+                    int parentWidth = parent.getWidth();
+                    View root = holder.mBindingView.getRoot();
+                    ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
+                    layoutParams.height = (parentHeight / CustomRecyclerAdapter.this.getHeightSplit());
+                    parent.requestLayout();
+                    calculated =true;
+                }
+            });
+        }
         return onCreateCustomViewHolder(parent, viewType);
+    }
+
+    public int getHeightSplit() {
+        return mHeightSplit;
     }
 
     public abstract ContentViewHolder<? extends ViewDataBinding> onCreateCustomViewHolder(@NonNull ViewGroup parent, int viewType);
