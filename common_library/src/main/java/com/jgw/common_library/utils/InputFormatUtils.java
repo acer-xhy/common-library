@@ -46,7 +46,7 @@ public class InputFormatUtils implements LifecycleObserver {
     }
 
     public void limitInput(final int integerLength, final int doubleLength, final EditText editText) {
-        limitInput(null,integerLength,doubleLength,editText);
+        limitInput(null, integerLength, doubleLength, editText);
     }
 
     public void limitInput(Lifecycle lifecycle, final int integerLength, final int doubleLength, final EditText editText) {
@@ -136,10 +136,15 @@ public class InputFormatUtils implements LifecycleObserver {
             }
         }
     }
+
     public static String formatText(String str, int integerLength, int doubleLength) {
         int pointIndex = str.indexOf(".");
+        int pointLastIndex = str.lastIndexOf(".");
+        if (pointIndex != pointLastIndex) {
+            return str.substring(0,pointLastIndex);
+        }
         int zeroIndex = str.indexOf("0");
-        String formatText=str;
+        String formatText = str;
         if (pointIndex == -1) {
             //整数
             //多位数,删除首位0
