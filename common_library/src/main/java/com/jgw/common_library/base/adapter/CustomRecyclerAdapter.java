@@ -105,7 +105,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
                 }
             });
         }
-        return onCreateCustomViewHolder(parent, viewType);
+        return holder;
     }
 
     public int getHeightSplit() {
