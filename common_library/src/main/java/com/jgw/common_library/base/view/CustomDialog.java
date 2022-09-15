@@ -7,7 +7,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public abstract class CustomDialog extends Dialog {
     private boolean showStatusBar;
