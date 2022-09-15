@@ -14,7 +14,7 @@ import com.jgw.common_library.base.ui.BaseActivity;
 public class ToastUtils {
     public static void showToast(final String msg) {
         if (!TextUtils.isEmpty(msg)) {
-            com.hjq.toast.ToastUtils.setGravity(Gravity.BOTTOM, 0, (int) (60 * BaseActivity.xMultiple));
+            com.hjq.toast.ToastUtils.setGravity(Gravity.BOTTOM, 0, (int) (60 * BaseActivity.getXMultiple()));
             com.hjq.toast.ToastUtils.show(msg);
         }
     }

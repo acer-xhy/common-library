@@ -24,7 +24,7 @@ public class SelectDialogUtil {
         if (contentList == null || contentList.isEmpty()) {
             return;
         }
-        maxHeight=(int)(maxHeight* BaseActivity.xMultiple);
+        maxHeight=(int)(maxHeight* BaseActivity.getXMultiple());
         SelectDialog.newInstance(context)
                 .setContentList(contentList)
                 .setOnItemClickListener(listener)

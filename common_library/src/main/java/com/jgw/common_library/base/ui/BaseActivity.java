@@ -27,7 +27,7 @@ import com.jgw.common_library.utils.LogUtils;
 import com.jgw.common_library.utils.click_utils.ClickUtils;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 import com.jgw.common_library.utils.click_utils.listener.OnSingleClickListener;
-import com.jgw.common_library.widget.loadingDialog.CircularProgressDialogFragment;
+import com.jgw.common_library.widget.loadingDialog.CircularProgressDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,8 +45,8 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     protected SV mBindingView;
 
     public FragmentManager fm;
-    public static float xMultiple;
-    private CircularProgressDialogFragment mDialog;
+    private static float xMultiple;
+    private CircularProgressDialog mDialog;
     private boolean isShowing;
     public static int mPhoneWidth;
     public static int mPhoneHeight;
@@ -71,7 +71,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
 
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
-        xMultiple = point.x / 360f;
+        setXMultiple(point.x / 360f);
         mPhoneWidth = point.x;
         mPhoneHeight = point.y;
     }
@@ -249,12 +249,12 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         showLoadingDialog(-1);
     }
 
-    public CircularProgressDialogFragment showLoadingDialog(int progressType) {
+    public CircularProgressDialog showLoadingDialog(int progressType) {
         if (mDialog != null && progressType != mDialog.getProgressType()) {
             dismissLoadingDialog();
         }
         if (mDialog == null) {
-            mDialog = CircularProgressDialogFragment.newInstance(this, progressType);
+            mDialog = CircularProgressDialog.newInstance(this, progressType);
             mDialog.setCancelable(false);
             mDialog.setOnDismissListener(dialog -> dismissLoadingDialog());
             mDialog.setLoadProgressFinishListener(this::dismissLoadingDialog);
@@ -329,4 +329,11 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
 
     }
 
+    public static float getXMultiple() {
+        return xMultiple;
+    }
+
+    public static void setXMultiple(float xMultiple) {
+        BaseActivity.xMultiple = xMultiple;
+    }
 }

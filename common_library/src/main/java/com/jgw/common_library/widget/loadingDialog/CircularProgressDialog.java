@@ -1,6 +1,5 @@
 package com.jgw.common_library.widget.loadingDialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -8,42 +7,38 @@ import android.text.style.AbsoluteSizeSpan;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import com.jgw.common_library.R;
+import com.jgw.common_library.base.view.CustomDialog;
 import com.jgw.common_library.databinding.DialogFragmentCountLoadingBinding;
 import com.jgw.common_library.databinding.DialogFragmentCycleLoadingBinding;
 import com.jgw.common_library.databinding.DialogFragmentPercentageLoadingBinding;
 
-public class CircularProgressDialogFragment extends Dialog {
+public class CircularProgressDialog extends CustomDialog {
 
     private ViewDataBinding view;
     private int progressType;
 
-    public CircularProgressDialogFragment(@NonNull Context context) {
-        super(context);
+    public CircularProgressDialog(@NonNull Context context) {
+        super(context,R.style.CustomDialog);
     }
 
-    public CircularProgressDialogFragment(@NonNull Context context, int themeResId) {
+    public CircularProgressDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 
-    public CircularProgressDialogFragment(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-    }
-
-    public static CircularProgressDialogFragment newInstance(Context context) {
-        return CircularProgressDialogFragment.newInstance(context, -1);
+    public static CircularProgressDialog newInstance(Context context) {
+        return CircularProgressDialog.newInstance(context, -1);
     }
 
     /**
      * @param progressType -1无限循环 1百分比进度 2计数进度
      * @return
      */
-    public static CircularProgressDialogFragment newInstance(Context context, int progressType) {
-        CircularProgressDialogFragment dialogFragment = new CircularProgressDialogFragment(context, R.style.CustomDialog);
+    public static CircularProgressDialog newInstance(Context context, int progressType) {
+        CircularProgressDialog dialogFragment = new CircularProgressDialog(context);
         dialogFragment.setProgressType(progressType);
         return dialogFragment;
     }

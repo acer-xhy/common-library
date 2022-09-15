@@ -38,7 +38,7 @@ public class CircularProgressView extends View {
     private int mRectT;
     private int progressMode;//0无限旋转 1进度模式
     private Disposable mDisposable;
-    private CircularProgressDialogFragment.OnLoadingProgressFinishListener mListener;
+    private CircularProgressDialog.OnLoadingProgressFinishListener mListener;
     private boolean mUseProgressRange;
     private int mCount;
     private int mTotal;
@@ -65,7 +65,7 @@ public class CircularProgressView extends View {
         mBackPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mBackPaint.setAntiAlias(true);              // 设置抗锯齿
         mBackPaint.setDither(true);                 // 设置抖动
-        mBackPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.xMultiple);
+        mBackPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.getXMultiple());
         mBackPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_backColor, Color.LTGRAY));
 
         // 初始化进度圆环画笔
@@ -74,7 +74,7 @@ public class CircularProgressView extends View {
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mProgressPaint.setAntiAlias(true);              // 设置抗锯齿
         mProgressPaint.setDither(true);                 // 设置抖动
-        mProgressPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.xMultiple);
+        mProgressPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.getXMultiple());
         mProgressPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_progColor, Color.BLUE));
         // 初始化进度
         mProgress = typedArray.getInteger(R.styleable.CircularProgressView_progress, 0);
@@ -261,7 +261,7 @@ public class CircularProgressView extends View {
                 });
     }
 
-    public void setLoadingProgressFinishListener(CircularProgressDialogFragment.OnLoadingProgressFinishListener listener) {
+    public void setLoadingProgressFinishListener(CircularProgressDialog.OnLoadingProgressFinishListener listener) {
         mListener = listener;
     }
 
