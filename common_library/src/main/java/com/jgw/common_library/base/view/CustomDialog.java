@@ -22,9 +22,10 @@ public abstract class CustomDialog extends Dialog {
 
     @Override
     public void show() {
+        Window window = getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         super.show();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getWindow();
         lp.copyFrom(window.getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
@@ -39,7 +40,7 @@ public abstract class CustomDialog extends Dialog {
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             window.getDecorView().setSystemUiVisibility(flag);
         }
-
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
     public boolean isShowStatusBar() {
