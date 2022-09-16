@@ -22,7 +22,7 @@ public class CommonDialogUtil {
 
     // single button
     public static CommonDialog showConfirmDialog(Context context, String title, CharSequence detail,
-                                                 String confirmText, CommonDialog.OnConfirmClickListener listener) {
+                                                 String confirmText, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
         return dialogFragment
@@ -30,17 +30,17 @@ public class CommonDialogUtil {
                 .setDialogType(CommonDialog.TYPE_CONFIRM_DIALOG)
                 .setDetails(detail)
                 .setRightButtonStr(confirmText)
-                .setOnConfirmClickListener(listener);
+                .setOnButtonClickListener(listener);
     }
 
     // input && double button
     public static CommonDialog showInputDialog(Context context, String title, String hint, String leftText,
-                                               String rightText, CommonDialog.OnInputButtonClickListener listener) {
+                                               String rightText, CommonDialog.OnButtonClickListener listener) {
         return showInputDialog(context, title, hint, leftText, rightText, InputType.TYPE_CLASS_TEXT, listener);
     }
 
     public static CommonDialog showInputDialog(Context context, String title, String hint, String leftText,
-                                               String rightText, int inputType, CommonDialog.OnInputButtonClickListener listener) {
+                                               String rightText, int inputType, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
         return dialogFragment
@@ -49,7 +49,7 @@ public class CommonDialogUtil {
                 .setInputHintText(hint)
                 .setLeftButtonStr(leftText)
                 .setRightButtonStr(rightText)
-                .setOnInputButtonClickListener(listener)
+                .setOnButtonClickListener(listener)
                 .setOnInputType(inputType);
     }
 }

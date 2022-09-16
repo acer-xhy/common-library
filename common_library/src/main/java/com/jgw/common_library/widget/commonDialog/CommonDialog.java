@@ -21,8 +21,6 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
     public static final int TYPE_INPUT_DIALOG = 3;
 
     private OnButtonClickListener mOnButtonClickListener;
-    private OnConfirmClickListener mOnConfirmClickListener;
-    private OnInputButtonClickListener mOnInputButtonClickListener;
     private com.jgw.common_library.databinding.DialogFragmentCommonBinding viewDataBinding;
     private final CommonDialogBean mData = new CommonDialogBean();
 
@@ -63,8 +61,6 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
     private void onRightClick() {
         switch (mData.getType()) {
             case CommonDialog.TYPE_CONFIRM_DIALOG:
-                doConfirmButtonClick();
-                break;
             case CommonDialog.TYPE_SELECT_DIALOG:
                 doRightButtonClick();
                 break;
@@ -72,6 +68,9 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
                 doInputRightButtonClick();
                 break;
+        }
+        if (mOnButtonClickListener != null && mOnButtonClickListener.onAutoDismiss()) {
+            dismiss();
         }
     }
 
@@ -85,8 +84,10 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 break;
             case CommonDialog.TYPE_INPUT_DIALOG:
                 hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
-                dismiss();
                 break;
+        }
+        if (mOnButtonClickListener != null && mOnButtonClickListener.onAutoDismiss()) {
+            dismiss();
         }
     }
 
@@ -133,16 +134,6 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
         return this;
     }
 
-    public CommonDialog setOnConfirmClickListener(OnConfirmClickListener l) {
-        mOnConfirmClickListener = l;
-        return this;
-    }
-
-    public CommonDialog setOnInputButtonClickListener(OnInputButtonClickListener l) {
-        mOnInputButtonClickListener = l;
-        return this;
-    }
-
     public CommonDialog setOnInputType(int type) {
         viewDataBinding.etDialogInput.setInputType(type);
         return this;
@@ -150,42 +141,40 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
 
     private void doLeftButtonClick() {
         if (mOnButtonClickListener != null) {
-            mOnButtonClickListener.onLeftButtonClick();
+            mOnButtonClickListener.onLeftClick();
         }
     }
 
     private void doRightButtonClick() {
         if (mOnButtonClickListener != null) {
-            mOnButtonClickListener.onRightButtonClick();
-        }
-    }
-
-    private void doConfirmButtonClick() {
-        if (mOnConfirmClickListener != null) {
-            mOnConfirmClickListener.onClick();
+            mOnButtonClickListener.onRightClick();
         }
     }
 
 
     private void doInputRightButtonClick() {
-        if (mOnInputButtonClickListener != null) {
-            mOnInputButtonClickListener.onRightButtonClick(mData.getInput());
+        if (mOnButtonClickListener != null) {
+            if (mOnButtonClickListener.onInput(mData.getInput())) {
+                mOnButtonClickListener.onRightClick();
+            }
         }
     }
 
 
     public interface OnButtonClickListener {
-        void onLeftButtonClick();
+        default void onLeftClick() {
+        }
 
-        void onRightButtonClick();
-    }
+        default void onRightClick() {
+        }
 
-    public interface OnConfirmClickListener {
-        void onClick();
-    }
+        default boolean onInput(String input) {
+            return true;
+        }
 
-    public interface OnInputButtonClickListener {
-        void onRightButtonClick(String input);
+        default boolean onAutoDismiss() {
+            return true;
+        }
     }
 
     /**
