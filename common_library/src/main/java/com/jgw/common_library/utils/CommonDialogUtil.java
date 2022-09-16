@@ -11,13 +11,14 @@ public class CommonDialogUtil {
                                                 String leftText, String rightText, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
-        return dialogFragment
-                .setCustomTitle(title)
+        dialogFragment.setCustomTitle(title)
                 .setDialogType(CommonDialog.TYPE_SELECT_DIALOG)
                 .setDetails(detail)
                 .setLeftButtonStr(leftText)
                 .setRightButtonStr(rightText)
-                .setOnButtonClickListener(listener);
+                .setOnButtonClickListener(listener)
+                .show();
+        return dialogFragment;
     }
 
     // single button
@@ -25,12 +26,13 @@ public class CommonDialogUtil {
                                                  String confirmText, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
-        return dialogFragment
-                .setCustomTitle(title)
+        dialogFragment.setCustomTitle(title)
                 .setDialogType(CommonDialog.TYPE_CONFIRM_DIALOG)
                 .setDetails(detail)
                 .setRightButtonStr(confirmText)
-                .setOnButtonClickListener(listener);
+                .setOnButtonClickListener(listener)
+                .show();
+        return dialogFragment;
     }
 
     // input && double button
@@ -43,13 +45,14 @@ public class CommonDialogUtil {
                                                String rightText, int inputType, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
-        return dialogFragment
-                .setCustomTitle(title)
+        dialogFragment.setCustomTitle(title)
                 .setDialogType(CommonDialog.TYPE_INPUT_DIALOG)
                 .setInputHintText(hint)
                 .setLeftButtonStr(leftText)
                 .setRightButtonStr(rightText)
                 .setOnButtonClickListener(listener)
-                .setOnInputType(inputType);
+                .setOnInputType(inputType)
+                .show();
+        return dialogFragment;
     }
 }
