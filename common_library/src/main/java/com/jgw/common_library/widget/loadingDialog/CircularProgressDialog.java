@@ -21,24 +21,20 @@ public class CircularProgressDialog extends CustomDialog {
     private ViewDataBinding view;
     private int progressType;
 
-    public CircularProgressDialog(@NonNull Context context) {
-        super(context,R.style.CustomDialog);
-    }
-
     public CircularProgressDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 
-    public static CircularProgressDialog newInstance(Context context) {
-        return CircularProgressDialog.newInstance(context, -1);
+    public static CircularProgressDialog newInstance(Context context, int progressType) {
+        return newInstance(context, progressType, R.style.CustomDialog);
     }
 
     /**
      * @param progressType -1无限循环 1百分比进度 2计数进度
      * @return
      */
-    public static CircularProgressDialog newInstance(Context context, int progressType) {
-        CircularProgressDialog dialogFragment = new CircularProgressDialog(context);
+    public static CircularProgressDialog newInstance(Context context, int progressType, int resId) {
+        CircularProgressDialog dialogFragment = new CircularProgressDialog(context, resId);
         dialogFragment.setProgressType(progressType);
         return dialogFragment;
     }
