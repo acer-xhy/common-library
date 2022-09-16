@@ -66,7 +66,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 break;
             case CommonDialog.TYPE_INPUT_DIALOG:
                 hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
-                doInputRightButtonClick();
+                doRightButtonClick();
                 break;
         }
     }
@@ -81,6 +81,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 break;
             case CommonDialog.TYPE_INPUT_DIALOG:
                 hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
+                doLeftButtonClick();
                 break;
         }
     }
@@ -148,15 +149,6 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
             mOnButtonClickListener.onRightClick();
             if (mOnButtonClickListener.onAutoDismiss() && mOnButtonClickListener.onInput(mData.getInput())) {
                 dismiss();
-            }
-        }
-    }
-
-
-    private void doInputRightButtonClick() {
-        if (mOnButtonClickListener != null) {
-            if (mOnButtonClickListener.onInput(mData.getInput())) {
-                mOnButtonClickListener.onRightClick();
             }
         }
     }
