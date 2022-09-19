@@ -135,21 +135,36 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
     }
 
     private void doLeftButtonClick() {
-        if (mOnButtonClickListener != null) {
-            mOnButtonClickListener.onLeftClick();
-            if (mOnButtonClickListener.onAutoDismiss() && mOnButtonClickListener.onInput(mData.getInput())) {
-                dismiss();
+        if (mOnButtonClickListener == null) {
+            return;
+        }
+        if (!mOnButtonClickListener.isRightConfirm()) {
+            boolean inputOk = mOnButtonClickListener.onInput(mData.getInput());
+            if (!inputOk) {
+                return;
             }
         }
-
+        mOnButtonClickListener.onLeftClick();
+        boolean autoDismiss = mOnButtonClickListener.onAutoDismiss();
+        if (autoDismiss) {
+            dismiss();
+        }
     }
 
     private void doRightButtonClick() {
-        if (mOnButtonClickListener != null) {
-            mOnButtonClickListener.onRightClick();
-            if (mOnButtonClickListener.onAutoDismiss() && mOnButtonClickListener.onInput(mData.getInput())) {
-                dismiss();
+        if (mOnButtonClickListener == null) {
+            return;
+        }
+        if (mOnButtonClickListener.isRightConfirm()) {
+            boolean inputOk = mOnButtonClickListener.onInput(mData.getInput());
+            if (!inputOk) {
+                return;
             }
+        }
+        mOnButtonClickListener.onRightClick();
+        boolean autoDismiss = mOnButtonClickListener.onAutoDismiss();
+        if (autoDismiss) {
+            dismiss();
         }
     }
 
@@ -159,6 +174,10 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
         }
 
         default void onRightClick() {
+        }
+
+        default boolean isRightConfirm() {
+            return true;
         }
 
         default boolean onInput(String input) {
