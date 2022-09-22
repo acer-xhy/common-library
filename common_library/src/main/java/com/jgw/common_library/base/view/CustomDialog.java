@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 public abstract class CustomDialog extends Dialog {
     public static boolean globalShowStatusBar;
 
-    private boolean currentShowStatusBar;
+    private Boolean currentShowStatusBar;
 
     public CustomDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
@@ -28,7 +28,15 @@ public abstract class CustomDialog extends Dialog {
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(lp);
 
-        if (isShowStatusBar() || globalShowStatusBar) {
+        if (isShowStatusBar() != null && !isShowStatusBar()) {
+            int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            window.getDecorView().setSystemUiVisibility(flag);
+        } else if (!globalShowStatusBar) {
             int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -40,7 +48,7 @@ public abstract class CustomDialog extends Dialog {
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
-    public boolean isShowStatusBar() {
+    public Boolean isShowStatusBar() {
         return currentShowStatusBar;
     }
 
