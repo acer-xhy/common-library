@@ -58,6 +58,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
         initListener();
         return mView;
     }
+
     private SV initViewBinding() {
         Class<SV> clazz = ClassUtils.getViewBinding(this);
         SV viewBinding = null;
@@ -92,7 +93,9 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
     }
 
     @Deprecated
-    public int initResId(){return 0;}
+    public int initResId() {
+        return 0;
+    }
 
     protected abstract void initView();
 
@@ -146,7 +149,29 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.iv_toolbar_back) {
+            onBackPressed();
+        } else if (id == R.id.tv_toolbar_right) {
+            clickRight();
+        }
+    }
+
+    public void onBackPressed() {
+        FragmentActivity activity = getActivity();
+        if (activity instanceof BaseActivity) {
+            //noinspection rawtypes
+            ((BaseActivity) activity).onBackPressed();
+        }
+    }
+
+    public void clickRight() {
+        FragmentActivity activity = getActivity();
+        if (activity instanceof BaseActivity) {
+            //noinspection rawtypes
+            ((BaseActivity) activity).clickRight();
+        }
     }
 
     public void backgroundAlpha(float bgAlpha) {
@@ -165,7 +190,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
 
     public void showLoadingDialog(int progressType) {
         FragmentActivity activity = getActivity();
-        if (activity instanceof BaseActivity){
+        if (activity instanceof BaseActivity) {
             //noinspection rawtypes
             ((BaseActivity) activity).showLoadingDialog(progressType);
         }
@@ -173,11 +198,12 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
 
     public void dismissLoadingDialog() {
         FragmentActivity activity = getActivity();
-        if (activity instanceof BaseActivity){
+        if (activity instanceof BaseActivity) {
             //noinspection rawtypes
             ((BaseActivity) activity).dismissLoadingDialog();
         }
     }
+
     @Override
     public void startActivity(Intent intent) {
         if (intent != null) {
