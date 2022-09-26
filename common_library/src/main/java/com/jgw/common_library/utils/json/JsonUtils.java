@@ -2,6 +2,8 @@ package com.jgw.common_library.utils.json;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.PropertyFilter;
@@ -53,19 +55,36 @@ public class JsonUtils {
         mClassFilter.clear();
     }
 
+    @Nullable
     public static <T> T parseObject(String json, Class<T> clazz) {
+        if (json == null) {
+            return null;
+        }
         return parseObject(json).toJavaObject(clazz);
     }
 
+    @Nullable
     public static JsonObject parseObject(String json) {
+        if (json == null) {
+            return null;
+        }
         return new JsonObject(json);
     }
 
+    @Nullable
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
-        return parseArray(json).toJavaList(clazz);
+        JsonArray jsonArray = parseArray(json);
+        if (jsonArray==null){
+            return null;
+        }
+        return jsonArray.toJavaList(clazz);
     }
 
+    @Nullable
     public static JsonArray parseArray(String json) {
+        if (json==null){
+            return null;
+        }
         if (TextUtils.isEmpty(json) || TextUtils.equals("{}", json)) {
             return new JsonArray();
         }

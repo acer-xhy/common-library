@@ -1,5 +1,7 @@
 package com.jgw.common_library.utils.json;
 
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -65,13 +67,21 @@ public class JsonObject {
         return jb.getBooleanValue(key);
     }
 
+    @Nullable
     public JsonObject getJsonObject(String key) {
         JSONObject jsonObject = jb.getJSONObject(key);
+        if (jsonObject == null) {
+            return null;
+        }
         return new JsonObject(jsonObject);
     }
 
+    @Nullable
     public JsonArray getJsonArray(String key) {
         JSONArray jsonArray = jb.getJSONArray(key);
+        if (jsonArray == null) {
+            return null;
+        }
         return new JsonArray(jsonArray);
     }
 

@@ -1,5 +1,7 @@
 package com.jgw.common_library.utils.json;
 
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -44,10 +46,6 @@ public class JsonArray {
         ja.removeAll(list);
     }
 
-    public <T> List<T> toJavaList(Class<T> clazz) {
-        return ja.toJavaList(clazz);
-    }
-
     public String getString(int index) {
         return ja.getString(index);
     }
@@ -84,14 +82,28 @@ public class JsonArray {
         return ja.size();
     }
 
+    @Nullable
     public JsonObject getJsonObject(int index) {
         JSONObject jsonObject = ja.getJSONObject(index);
+        if (jsonObject == null) {
+            return null;
+        }
         return new JsonObject(jsonObject);
     }
 
+    @Nullable
     public JsonArray getJsonArray(int index) {
         JSONArray jsonArray = ja.getJSONArray(index);
+        if (jsonArray == null) {
+            return null;
+        }
         return new JsonArray(jsonArray);
     }
 
+    public <T> List<T> toJavaList(Class<T> clazz) {
+        if (ja == null) {
+            return null;
+        }
+        return ja.toJavaList(clazz);
+    }
 }
