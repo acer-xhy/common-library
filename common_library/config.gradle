@@ -25,7 +25,7 @@ ext {
             umsdk_asms = "1.6.3",
             umeng_apm = "1.7.0",
             mmkv = "1.2.13",
-            xxpermissions = "13.6",
+            xxpermissions = "16.2",
             toast = "9.1"
     ]
 

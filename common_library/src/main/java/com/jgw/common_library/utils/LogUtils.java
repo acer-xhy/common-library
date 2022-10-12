@@ -20,21 +20,17 @@ public class LogUtils {
 
     public static void showLog(String msg) {
         if (getShowLogEnable() && !TextUtils.isEmpty(msg)) {
-            Log.i("jgw", msg);
+            Log.e("jgw", msg);
         }
     }
 
     public static void showLog(String tag, String msg) {
         if (getShowLogEnable() && !TextUtils.isEmpty(msg)) {
-            Log.i(tag, msg);
+            Log.e(tag, msg);
         }
     }
 
     public static boolean getShowLogEnable() {
         return BuildConfig.DEBUG || debugShowLog;
-    }
-
-    public static void showChannelLog(String s) {
-        Log.i("jgw_channel", s);
     }
 }
