@@ -87,12 +87,13 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
             }
         }
         ContentViewHolder<? extends ViewDataBinding> holder = onCreateCustomViewHolder(parent, viewType);
-        if (getHeightSplit() !=0){
+        if (getHeightSplit() != 0) {
             parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                boolean calculated =false;
+                boolean calculated = false;
+
                 @Override
                 public void onGlobalLayout() {
-                    if (calculated){
+                    if (calculated) {
                         return;
                     }
                     int parentHeight = parent.getHeight();
@@ -101,7 +102,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
                     ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
                     layoutParams.height = (parentHeight / CustomRecyclerAdapter.this.getHeightSplit());
                     parent.requestLayout();
-                    calculated =true;
+                    calculated = true;
                 }
             });
         }
@@ -124,7 +125,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
 
     public abstract void onBindCustomViewHolder(@NonNull RecyclerView.ViewHolder holder, int position);
 
-    public void setLoadMoreList(List<T> list) {
+    public void setLoadMoreList(List<? extends T> list) {
         if (list != null && list.size() != 0) {
             mList.addAll(list);
         }
@@ -134,17 +135,13 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
      * 改为notify方法添加数据
      */
     @Deprecated
-    public void setDataList(List<T> list) {
-        if (mList == null) {
-            mList = list;
-        } else {
-            mList.clear();
-            mList.addAll(list);
-        }
+    public void setDataList(List<? extends T> list) {
+        mList.clear();
+        mList.addAll(list);
     }
 
-    public void setNewDataList(List<T> list) {
-        mList = list;
+    @Deprecated
+    public void setNewDataList(List<? extends T> list) {
     }
 
     public List<T> getDataList() {
@@ -257,7 +254,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         return mList == null || mList.size() == 0;
     }
 
-    public void notifyRefreshList(List<T> list) {
+    public void notifyRefreshList(List<? extends T> list) {
         int oldSize = mList.size();
         int newSize = list.size();
         if (oldSize == newSize) {
@@ -277,7 +274,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         }
     }
 
-    private void updateCurrentList(List<T> newList, int size) {
+    private void updateCurrentList(List<? extends T> newList, int size) {
         String oldDataJson;
         String newDataJson;
         for (int i = 0; i < size; i++) {
@@ -303,7 +300,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         notifyItemRangeRemoved(getHeaderCount(), size);
     }
 
-    public void notifyAddListItem(List<T> list) {
+    public void notifyAddListItem(List<? extends T> list) {
         if (list == null || list.isEmpty()) {
             return;
         }

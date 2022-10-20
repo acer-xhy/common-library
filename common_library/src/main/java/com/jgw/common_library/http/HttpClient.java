@@ -36,4 +36,7 @@ public class HttpClient {
         return (T) o;
     }
 
+    public static void release(){
+        map.clear();
+    }
 }
