@@ -136,6 +136,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
 
     private void doLeftButtonClick() {
         if (mOnButtonClickListener == null) {
+            dismiss();
             return;
         }
         if (!mOnButtonClickListener.isRightConfirm()) {
@@ -153,6 +154,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
 
     private void doRightButtonClick() {
         if (mOnButtonClickListener == null) {
+            dismiss();
             return;
         }
         if (mOnButtonClickListener.isRightConfirm()) {
