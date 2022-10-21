@@ -104,9 +104,9 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
 
     private void initAdapter() {
         CustomRecyclerAdapter<String> mAdapter = new SelectDialogAdapter();
-        mAdapter.setNewDataList(mList);
         mRvList.setLayoutManager(new LinearLayoutManager(mRvList.getContext(), RecyclerView.VERTICAL, false));
         mRvList.setAdapter(mAdapter);
+        mAdapter.notifyRefreshList(mList);
         mAdapter.setOnItemClickListener(new OnItemSingleClickListener() {
             @Override
             public void onItemClick(View view, int position) {

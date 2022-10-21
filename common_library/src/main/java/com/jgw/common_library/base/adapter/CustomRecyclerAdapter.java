@@ -140,10 +140,6 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         mList.addAll(list);
     }
 
-    @Deprecated
-    public void setNewDataList(List<? extends T> list) {
-    }
-
     public List<T> getDataList() {
         return mList;
     }
