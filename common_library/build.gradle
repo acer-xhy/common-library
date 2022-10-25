@@ -13,10 +13,21 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-
                 groupId = 'com.github.acer-xhy'
                 artifactId = 'common-library'
-                version = '1.0.6'
+                version = '1.2.1'
+            }
+        }
+        repositories {
+            maven {
+                //指定要上传的maven私服仓库
+                allowInsecureProtocol = true
+                url = "http://192.168.2.222:8081/nexus/content/repositories/releases/"
+                //认证用户名和密码
+                credentials {
+                    username 'admin'
+                    password 'admin123'
+                }
             }
         }
     }
@@ -56,3 +67,4 @@ dependencies {
     api dep.xxpermissions
     api dep.toast
 }
+

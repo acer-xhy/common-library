@@ -12,10 +12,11 @@ import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class FormatUtils {
-
+    public static final String FULL_TIME_PATTERN="yyyy-MM-dd HH:mm:ss";
+    public static final String DAY_TIME_PATTERN="yyyy-MM-dd";
+    public static final String DEFAULT_TIME_PATTERN=FULL_TIME_PATTERN;
     public static String formatTime(long l) {
-        String strPattern = "yyyy-MM-dd HH:mm:ss";
-        return formatTime(l, strPattern);
+        return formatTime(l, DEFAULT_TIME_PATTERN);
     }
 
     public static String formatTime(long l, String strPattern) {
@@ -25,8 +26,7 @@ public class FormatUtils {
     }
 
     public static String formatDate(Date date) {
-        String strPattern = "yyyy-MM-dd HH:mm:ss";
-        return formatDate(date, strPattern);
+        return formatDate(date, DEFAULT_TIME_PATTERN);
     }
 
     public static String formatDate(Date date, String strPattern) {
@@ -38,7 +38,7 @@ public class FormatUtils {
     }
 
     public static Date decodeDate(String s) {
-        return decodeDate(s, "yyyy-MM-dd HH:mm:ss");
+        return decodeDate(s, DEFAULT_TIME_PATTERN);
     }
 
     public static Date decodeDate(String s, String strPattern) {
@@ -53,7 +53,7 @@ public class FormatUtils {
     }
 
     public long decodeTime(String s) {
-        return decodeTime(s, "yyyy-MM-dd HH:mm:ss");
+        return decodeTime(s, DEFAULT_TIME_PATTERN);
     }
 
     public long decodeTime(String s, String strPattern) {
@@ -77,7 +77,7 @@ public class FormatUtils {
     }
 
     public static String formatDateDay(long l) {
-        return formatTime(l, "yyyy-MM-dd");
+        return formatTime(l, DAY_TIME_PATTERN);
     }
 
     public static String formatDateWeek(long l) {
