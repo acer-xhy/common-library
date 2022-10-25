@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 
 public abstract class CustomDialog extends Dialog {
-    public static boolean globalShowStatusBar;
+    public static boolean globalShowStatusBar = true;
 
     private Boolean currentShowStatusBar;
 

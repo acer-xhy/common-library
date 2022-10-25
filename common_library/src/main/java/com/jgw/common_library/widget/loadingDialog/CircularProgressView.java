@@ -65,7 +65,7 @@ public class CircularProgressView extends View {
         mBackPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mBackPaint.setAntiAlias(true);              // 设置抗锯齿
         mBackPaint.setDither(true);                 // 设置抖动
-        mBackPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.getXMultiple());
+        mBackPaint.setStrokeWidth(5 * BaseActivity.getXMultiple());
         mBackPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_backColor, Color.LTGRAY));
 
         // 初始化进度圆环画笔
@@ -74,7 +74,7 @@ public class CircularProgressView extends View {
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mProgressPaint.setAntiAlias(true);              // 设置抗锯齿
         mProgressPaint.setDither(true);                 // 设置抖动
-        mProgressPaint.setStrokeWidth(typedArray.getDimension(R.styleable.CircularProgressView_backWidth, 5) * BaseActivity.getXMultiple());
+        mProgressPaint.setStrokeWidth(5 * BaseActivity.getXMultiple());
         mProgressPaint.setColor(typedArray.getColor(R.styleable.CircularProgressView_progColor, Color.BLUE));
         // 初始化进度
         mProgress = typedArray.getInteger(R.styleable.CircularProgressView_progress, 0);
