@@ -6,6 +6,7 @@ import com.jgw.common_library.utils.LogUtils;
 import com.jgw.common_library.utils.ToastUtils;
 
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -31,14 +32,16 @@ public abstract class CustomObserver<T> implements Observer<T> {
             switchCustomException(((CustomHttpApiException) e).getApiExceptionCode(), ((CustomHttpApiException) e).getApiExceptionMessage());
         } else {
             //网络及其他异常处理
-            if (e instanceof HttpException) {
-                ToastUtils.showToast("网络错误:" + e.getMessage());
+            if (e instanceof UnknownHostException){
+                ToastUtils.showToast("网络繁忙,请稍后再试");
+            }else if (e instanceof HttpException) {
+                ToastUtils.showToast("网络错误:" + e);
             } else if (e instanceof SocketTimeoutException) {
                 ToastUtils.showToast("网络超时");
             } else {
                 ToastUtils.showToast("网络繁忙,请稍后再试");
             }
-            LogUtils.xswShowLog("Error:++++++++++" + e.getMessage() + e.toString());
+            LogUtils.xswShowLog("Error:++++++++++" + e);
         }
     }
 
