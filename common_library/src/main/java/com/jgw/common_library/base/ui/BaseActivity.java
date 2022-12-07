@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * Created by XiongShaoWu
  * on 2019/9/10
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "UnnecessaryLocalVariable"})
 public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewDataBinding>
         extends AppCompatActivity implements OnSingleClickListener, OnItemSingleClickListener {
     // ViewModel
@@ -146,11 +146,17 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
 
     public void setTitle(String title) {
         if (!TextUtils.isEmpty(title)) {
-            TextView textView = findViewById(R.id.tv_toolbar_title);
+            TextView textView = getSearchView();
             if (textView != null) {
                 textView.setText(title);
             }
         }
+    }
+
+    @Nullable
+    public TextView getTitleView() {
+        TextView editText = findViewById(R.id.tv_toolbar_title);
+        return editText;
     }
 
     public void setRightVisibility(int visibility) {
