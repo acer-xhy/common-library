@@ -50,6 +50,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     private boolean isShowing;
     public static int mPhoneWidth;
     public static int mPhoneHeight;
+    private static Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         if (savedInstanceState != null) {
             getSaveInstanceState(savedInstanceState);
         }
+        context=this;
         fm = getSupportFragmentManager();
 //        mBindingView = DataBindingUtil.inflate(getLayoutInflater(), initResId(), null, false);
         mBindingView = initViewBinding();
@@ -142,6 +144,10 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
                     .submit();
         }
 
+    }
+
+    public static Context getContext() {
+        return context;
     }
 
     public void setTitle(String title) {
