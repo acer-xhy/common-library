@@ -109,6 +109,10 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
         return this;
     }
 
+    public CommonDialog setInputText(String input) {
+        mData.setInput(input);
+        return this;
+    }
     public CommonDialog setInputHintText(String hintText) {
         mData.setInputHint(hintText);
         return this;

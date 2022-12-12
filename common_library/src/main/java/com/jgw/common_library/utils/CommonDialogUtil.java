@@ -43,10 +43,16 @@ public class CommonDialogUtil {
 
     public static CommonDialog showInputDialog(Context context, String title, String hint, String leftText,
                                                String rightText, int inputType, CommonDialog.OnButtonClickListener listener) {
+        return showInputDialog(context, title, hint, "",leftText, rightText, inputType, listener);
+    }
+
+    public static CommonDialog showInputDialog(Context context, String title, String hint, String input,String leftText,
+                                               String rightText, int inputType, CommonDialog.OnButtonClickListener listener) {
         CommonDialog dialogFragment = CommonDialog.newInstance(context);
         dialogFragment.setCancelable(false);
         dialogFragment.setCustomTitle(title)
                 .setDialogType(CommonDialog.TYPE_INPUT_DIALOG)
+                .setInputText(input)
                 .setInputHintText(hint)
                 .setLeftButtonStr(leftText)
                 .setRightButtonStr(rightText)
