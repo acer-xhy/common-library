@@ -152,7 +152,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
 
     public void setTitle(String title) {
         if (!TextUtils.isEmpty(title)) {
-            TextView textView = getSearchView();
+            TextView textView = getTitleView();
             if (textView != null) {
                 textView.setText(title);
             }
