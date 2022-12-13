@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jgw.common_library.R;
 import com.jgw.common_library.base.adapter.CustomRecyclerAdapter;
+import com.jgw.common_library.base.view.CustomBaseRecyclerView;
 import com.jgw.common_library.utils.click_utils.listener.OnItemSingleClickListener;
 
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
 public class SelectDialog extends Dialog implements View.OnClickListener {
 
     private View mDialogView;
-    private RecyclerView mRvList;
+    private CustomBaseRecyclerView mRvList;
 
     private Context mContext;
     private List<String> mList;
@@ -94,17 +95,15 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
         mRvList = mDialogView.findViewById(R.id.rv_dialog_list);
 
         if (mMaxHeight != null) {
-            mRvList.getLayoutParams().height = mMaxHeight;
+            int height = mRvList.getLayoutParams().height;
+            mRvList.getLayoutParams().height = Math.min(height,mMaxHeight);
         }
-
         tvCancel.setOnClickListener(this);
-
         initAdapter();
     }
 
     private void initAdapter() {
         CustomRecyclerAdapter<String> mAdapter = new SelectDialogAdapter();
-        mRvList.setLayoutManager(new LinearLayoutManager(mRvList.getContext(), RecyclerView.VERTICAL, false));
         mRvList.setAdapter(mAdapter);
         mAdapter.notifyRefreshList(mList);
         mAdapter.setOnItemClickListener(new OnItemSingleClickListener() {
