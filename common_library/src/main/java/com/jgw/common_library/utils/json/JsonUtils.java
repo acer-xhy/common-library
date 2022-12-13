@@ -57,15 +57,16 @@ public class JsonUtils {
 
     @Nullable
     public static <T> T parseObject(String json, Class<T> clazz) {
-        if (json == null) {
+        JsonObject jsonObject = parseObject(json);
+        if (jsonObject==null){
             return null;
         }
-        return parseObject(json).toJavaObject(clazz);
+        return jsonObject.toJavaObject(clazz);
     }
 
     @Nullable
     public static JsonObject parseObject(String json) {
-        if (json == null) {
+        if (TextUtils.isEmpty(json)) {
             return null;
         }
         return new JsonObject(json);
@@ -82,7 +83,7 @@ public class JsonUtils {
 
     @Nullable
     public static JsonArray parseArray(String json) {
-        if (json==null){
+        if (TextUtils.isEmpty(json)) {
             return null;
         }
         if (TextUtils.isEmpty(json) || TextUtils.equals("{}", json)) {

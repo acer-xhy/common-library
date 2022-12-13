@@ -237,7 +237,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     public void onBackStack() {
         if (fm.getBackStackEntryCount() <= 1) {
             finish();
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+            overridePendingTransition(R.anim.custom_slide_in_right, R.anim.custom_slide_out_right);
         } else {
             getSupportFragmentManager().popBackStack();
         }
@@ -290,7 +290,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     public void startActivity(@Nullable Intent intent) {
         if (intent != null) {
             super.startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            overridePendingTransition(R.anim.custom_slide_in_left, R.anim.custom_slide_out_left);
         }
     }
 
@@ -298,7 +298,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
     public void startActivityForResult(Intent intent, int requestCode) {
         if (intent != null) {
             super.startActivityForResult(intent, requestCode);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            overridePendingTransition(R.anim.custom_slide_in_left, R.anim.custom_slide_out_left);
         }
     }
 

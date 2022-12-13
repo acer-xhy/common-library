@@ -209,7 +209,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
         if (intent != null) {
             super.startActivity(intent);
             if (getActivity() != null) {
-                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                getActivity().overridePendingTransition(R.anim.custom_slide_in_left, R.anim.custom_slide_out_left);
             }
         }
     }
