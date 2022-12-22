@@ -43,4 +43,7 @@ public class PluginFactory {
         return null;
     }
 
+    public static void registerPlugin(String domain,Class<? extends BasePlugin> clazz){
+        pluginMap.put(domain,clazz);
+    }
 }
