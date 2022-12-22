@@ -1,7 +1,10 @@
 package com.jgw.common_library.http.rxjava;
 
-import com.alibaba.android.arouter.launcher.ARouter;
+import com.jgw.common_library.base.CustomApplication;
 import com.jgw.common_library.http.CustomHttpApiException;
+import com.jgw.common_library.router.CustomRouter;
+import com.jgw.common_library.router.model.RouterCommand;
+import com.jgw.common_library.router.plugin.LoginPlugin;
 import com.jgw.common_library.utils.LogUtils;
 import com.jgw.common_library.utils.ToastUtils;
 
@@ -45,7 +48,10 @@ public abstract class CustomFlowableSubscriber<T> implements FlowableSubscriber<
                 onNext(null);
                 break;
             case 401://登录失效
-                ARouter.getInstance().build("/user/login").navigation();
+                RouterCommand command = new RouterCommand();
+                command.domain= LoginPlugin.DOMAIN;
+                command.action= LoginPlugin.ACTION_TOKEN_USELESS;
+                CustomRouter.route(CustomApplication.getCustomApplicationContext(), command);
                 break;
             case 403://接口无权限
                 ToastUtils.showToast(msg);

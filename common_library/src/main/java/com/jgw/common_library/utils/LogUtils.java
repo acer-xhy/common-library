@@ -10,7 +10,11 @@ import com.jgw.common_library.BuildConfig;
  * Created by xsw on 2016/10/27.
  */
 public class LogUtils {
-    public static boolean debugShowLog = false;
+    private static boolean debugShowLog = false;
+
+    public static void setDebugShowLog(boolean debugShowLog) {
+        LogUtils.debugShowLog = debugShowLog;
+    }
 
     public static void xswShowLog(String msg) {
         if (getShowLogEnable() && !TextUtils.isEmpty(msg)) {
