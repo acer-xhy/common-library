@@ -4,9 +4,8 @@ import android.app.Activity;
 
 public class RegisterRouter {
 
-    public static boolean register(Class<? extends Activity> clazz) {
-        String className = clazz.getName();
-        CustomRouter.realRegister(className, clazz);
+    public static boolean register(String domain,Class<? extends Activity> clazz) {
+        CustomRouter.realRegister(domain, clazz);
         return true;
     }
 

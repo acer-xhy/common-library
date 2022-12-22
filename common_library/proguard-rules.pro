@@ -134,3 +134,6 @@
 -keep class  * extends androidx.databinding.ViewDataBinding {
        public <methods>;
 }
+
+-keep public class * extends androidx.lifecycle.AndroidViewModel
+-keep public class * extends com.jgw.common_library.router.plugin.base.BasePlugin

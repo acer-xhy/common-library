@@ -19,7 +19,7 @@ import java.util.Map;
  * 协议示例( jgw://domain?action=xxx&data={xxx} )
  */
 public class CustomRouter {
-    private static Map<String, Class<?>> registry = new HashMap<>();
+    private static final Map<String, Class<?>> registry = new HashMap<>();
 
     public static boolean route(Context context, String url) {
         return route(context, url, false);
@@ -36,9 +36,6 @@ public class CustomRouter {
      * @param handleHttpUrl 是否需要处理http链接
      */
     public static boolean route(Context context, String url, boolean handleHttpUrl) {
-        if (!BaseActivity.isActivityNotFinished(context)) {
-            return false;
-        }
         //空链接直接返回
         if (TextUtils.isEmpty(url)) {
             return false;
@@ -59,11 +56,11 @@ public class CustomRouter {
         return false;
     }
 
-    static void realRegister(String className, Class<? extends Activity> clazz) {
-
+    static void realRegister(String domain, Class<? extends Activity> clazz) {
+        registry.put(domain,clazz);
     }
 
-    public static Class<?> findRouter(String className) {
-        return registry.get(className);
+    public static Class<?> findRouter(String domain) {
+        return registry.get(domain);
     }
 }
