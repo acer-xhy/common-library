@@ -8,7 +8,8 @@ import java.util.Objects;
  */
 public class Resource<T> {
     public static final int LOADING = 1;
-    public static final int SUCCESS = 2;
+    public static final int NEXT = 2;
+    public static final int SUCCESS = 3;
     public static final int ERROR = -1;
     public static final int NETWORK_ERROR = -2;
 
