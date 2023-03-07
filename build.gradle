@@ -2,10 +2,6 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven {
-            allowInsecureProtocol = true
-            url 'http://192.168.2.222:8081/nexus/content/repositories/releases/'
-        }
         maven{ url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven{ url'https://maven.aliyun.com/repository/google' }
@@ -26,10 +22,6 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
-        maven {
-            allowInsecureProtocol = true
-            url 'http://192.168.2.222:8081/nexus/content/repositories/releases/'
-        }
         maven{ url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven{ url'https://maven.aliyun.com/repository/google' }
