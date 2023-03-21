@@ -127,6 +127,9 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        if (mListener != null) {
+            mListener.onCancel();
+        }
         dismissWithAnimation();
     }
 
@@ -167,8 +170,8 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
     }
 
     public interface OnSelectDialogItemClickListener {
-
         void onSingleItemClick(View view, int position, String string,SelectDialog dialog);
+        default void onCancel(){};
     }
 }
 

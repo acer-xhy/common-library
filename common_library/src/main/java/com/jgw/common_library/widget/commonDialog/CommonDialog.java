@@ -65,7 +65,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 doRightButtonClick();
                 break;
             case CommonDialog.TYPE_INPUT_DIALOG:
-                hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
+                hideSoftKeyboard();
                 doRightButtonClick();
                 break;
         }
@@ -80,7 +80,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
                 doLeftButtonClick();
                 break;
             case CommonDialog.TYPE_INPUT_DIALOG:
-                hideSoftKeyboard(getContext(), viewDataBinding.etDialogInput);
+                hideSoftKeyboard();
                 doLeftButtonClick();
                 break;
         }
@@ -198,15 +198,15 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
     /**
      * 隐藏软键盘(可用于Activity，Fragment)
      */
-    private static void hideSoftKeyboard(Context context, View v) {
-        if (v == null) return;
-        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    private void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),  InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
     public void dismiss() {
         try {
+            hideSoftKeyboard();
             super.dismiss();
         } catch (Exception e) {
             e.printStackTrace();
