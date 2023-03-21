@@ -7,11 +7,6 @@ android {
         minSdkVersion android.minSdkVersion
         targetSdkVersion android.targetSdkVersion
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [AROUTER_MODULE_NAME: project.getName()]
-            }
-        }
         ndk {
             ndk {
                 abiFilters 'armeabi-v7a'
