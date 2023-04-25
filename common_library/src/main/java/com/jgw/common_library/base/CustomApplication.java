@@ -22,6 +22,10 @@ public class CustomApplication extends Application {
         ToastUtils.init(this, com.jgw.common_library.utils.ToastUtils.getNormalStyle());
     }
 
+    public void setToastStyle(int gravity, int textSize) {
+        ToastUtils.setStyle(com.jgw.common_library.utils.ToastUtils.getCustomStyle(this, gravity, textSize));
+    }
+
     /**
      * dp转px
      */
