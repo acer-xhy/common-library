@@ -32,7 +32,7 @@ public class JsonObject {
     }
 
     public Map<String, Object> covertMap() {
-        return jb;
+        return jb.getInnerMap();
     }
 
     public String getString(String key) {
