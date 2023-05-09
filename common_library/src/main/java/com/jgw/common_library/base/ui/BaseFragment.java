@@ -134,6 +134,18 @@ public abstract class BaseFragment<VM extends BaseViewModel, SV extends ViewData
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        MobclickAgent.onPageStart(this.getClass().getName());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MobclickAgent.onPageEnd(this.getClass().getName());
+    }
+
+    @Override
     public void onItemClick(View view, int position) {
 
     }

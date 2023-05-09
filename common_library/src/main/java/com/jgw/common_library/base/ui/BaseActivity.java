@@ -107,6 +107,18 @@ public abstract class BaseActivity<VM extends BaseViewModel, SV extends ViewData
         MobclickAgent.onPause(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        MobclickAgent.onPageStart(this.getClass().getName());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MobclickAgent.onPageEnd(this.getClass().getName());
+    }
+
     /**
      * 初始化ViewModel
      */

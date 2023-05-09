@@ -16,15 +16,15 @@ ext {
             retrofit_adapter_rxjava2 = "2.8.1",
             fastjson = "1.1.71.android",
             converter_fastjson_android = "2.2.0",
-            glide = "4.13.2",
+            glide = "4.15.1",
             eventbus = "3.3.1",
             picker_view = "3.2.5",
-            umeng_common = "9.5.2",
+            umeng_common = "9.5.8",
             umsdk_asms = "1.6.3",
-            umeng_apm = "1.7.0",
-            mmkv = "1.2.13",
-            xxpermissions = "16.6",
-            toast = "9.1"
+            umeng_apm = "1.9.1",
+            mmkv = "1.2.16",
+            xxpermissions = "18.0",
+            toast = "12.2"
     ]
 
     //noinspection GroovyConstructorNamedArguments
@@ -56,6 +56,6 @@ ext {
 
             mmkv                      : "com.tencent:mmkv-static:$mmkv",
             xxpermissions             : "com.github.getActivity:XXPermissions:$xxpermissions",
-            toast                     : "com.github.getActivity:ToastUtils:$toast"
+            toast                     : "com.github.getActivity:Toaster:$toast"
     ]
 }
