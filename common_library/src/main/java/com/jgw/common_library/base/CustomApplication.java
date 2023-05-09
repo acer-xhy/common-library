@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.TypedValue;
 
-import com.hjq.toast.ToastUtils;
+import com.hjq.toast.Toaster;
 import com.jgw.common_library.utils.MMKVUtils;
 
 /**
@@ -19,11 +19,11 @@ public class CustomApplication extends Application {
         super.onCreate();
         context = this;
         MMKVUtils.init(this);
-        ToastUtils.init(this, com.jgw.common_library.utils.ToastUtils.getNormalStyle());
+        Toaster.init(this, com.jgw.common_library.utils.ToastUtils.getNormalStyle());
     }
 
     public void setToastStyle(int gravity, int textSize) {
-        ToastUtils.setStyle(com.jgw.common_library.utils.ToastUtils.getCustomStyle(this, gravity, textSize));
+        Toaster.setStyle(com.jgw.common_library.utils.ToastUtils.getCustomStyle(this, gravity, textSize));
     }
 
     /**
