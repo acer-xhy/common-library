@@ -36,8 +36,8 @@ public class DevicesUtils {
             if (TextUtils.isEmpty(serial)) {
                 serial = Build.SERIAL;
             }
-            if (TextUtils.isEmpty(serial)) {
-                serial =  Settings.Secure.getString(CustomApplication.context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            if (TextUtils.isEmpty(serial) || TextUtils.equals("unknown", serial)) {
+                serial = Settings.Secure.getString(CustomApplication.context.getContentResolver(), Settings.Secure.ANDROID_ID);
             }
             LogUtils.showLog("");
         } catch (Exception e) {
