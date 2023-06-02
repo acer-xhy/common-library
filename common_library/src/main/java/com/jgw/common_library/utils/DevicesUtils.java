@@ -25,7 +25,9 @@ public class DevicesUtils {
         }
         String serial = null;
         try {
+            //noinspection rawtypes
             Class c = Class.forName("android.os.SystemProperties");
+            //noinspection unchecked
             Method get = c.getMethod("get", String.class);
             serial = (String) get.invoke(c, "ro.serialno");
             if (TextUtils.isEmpty(serial)) {
@@ -33,6 +35,9 @@ public class DevicesUtils {
             }
             if (TextUtils.isEmpty(serial)) {
                 serial = Build.SERIAL;
+            }
+            if (TextUtils.isEmpty(serial)) {
+                serial =  Settings.Secure.getString(CustomApplication.context.getContentResolver(), Settings.Secure.ANDROID_ID);
             }
             LogUtils.showLog("");
         } catch (Exception e) {
