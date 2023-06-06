@@ -307,11 +307,11 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         notifyItemRangeInserted(startCount, offset);
     }
 
-    public void notifyAddItem(T item) {
+    public <K extends T> void  notifyAddItem(K item) {
         notifyAddItem(item, 0);
     }
 
-    public void notifyAddItem(T item, int position) {
+    public <K extends T> void notifyAddItem(K item, int position) {
         int size = mList.size();
         mList.add(position, item);
         notifyItemInserted(getHeaderCount() + position);
@@ -323,7 +323,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         notifyItemRemoved(getHeaderCount() + position);
     }
 
-    public void notifyRemoveItem(T item) {
+    public <K extends T>void notifyRemoveItem(K item) {
         int index = mList.indexOf(item);
         if (index == -1) {
             return;
@@ -331,7 +331,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         notifyRemoveItem(index);
     }
 
-    public void notifyRefreshItem(T item) {
+    public <K extends T>void notifyRefreshItem(K item) {
         int index = mList.indexOf(item);
         if (index == -1) {
             return;
@@ -340,7 +340,7 @@ public abstract class CustomRecyclerAdapter<T> extends RecyclerView.Adapter<Recy
         notifyItemChanged(getHeaderCount() + index);
     }
 
-    public void addAndNotifyLastItem(T item) {
+    public <K extends T>void addAndNotifyLastItem(K item) {
         notifyAddItem(item, mList.size());
     }
 }
