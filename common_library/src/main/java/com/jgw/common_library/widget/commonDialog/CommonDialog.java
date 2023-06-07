@@ -3,6 +3,7 @@ package com.jgw.common_library.widget.commonDialog;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Spanned;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -45,6 +46,7 @@ public class CommonDialog extends CustomDialog implements View.OnClickListener {
         viewDataBinding.tvDialogCommonLeft.setOnClickListener(this);
         viewDataBinding.tvDialogCommonRight.setOnClickListener(this);
         viewDataBinding.tvDialogCommonRight.setOnClickListener(this);
+        viewDataBinding.tvDialogContent.setMovementMethod(ScrollingMovementMethod.getInstance());
         setContentView(viewDataBinding.getRoot());
     }
 

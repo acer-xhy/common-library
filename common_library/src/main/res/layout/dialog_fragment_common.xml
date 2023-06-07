@@ -37,10 +37,12 @@
                     tools:text="标题" />
 
                 <TextView
+                    android:id="@+id/tv_dialog_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
+                    android:scrollbars="vertical"
                     android:maxLines="4"
                     android:text="@{data.detailsText}"
                     android:textColor="@color/gray_aa"
