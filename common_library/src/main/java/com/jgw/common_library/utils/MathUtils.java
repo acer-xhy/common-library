@@ -73,4 +73,17 @@ public class MathUtils {
         BigDecimal one = new BigDecimal("1");
         return b.divide(one, scale, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static String bigNumberAdd(String s1,String s2){
+        BigDecimal bigDecimal1 = new BigDecimal(s1);
+        BigDecimal bigDecimal2 = new BigDecimal(s2);
+
+        return bigDecimal1.add(bigDecimal2).toPlainString();
+    }
+    public static String bigNumberSub(String s1,String s2){
+        BigDecimal bigDecimal1 = new BigDecimal(s1);
+        BigDecimal bigDecimal2 = new BigDecimal(s2);
+
+        return bigDecimal1.subtract(bigDecimal2).toPlainString();
+    }
 }
