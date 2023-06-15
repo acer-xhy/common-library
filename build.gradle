@@ -2,6 +2,7 @@
 buildscript {
     repositories {
         mavenLocal()
+        maven { url 'https://www.xionghaoyue.xyz:8082/repository/android-xhy-group/' }
         maven{ url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven{ url'https://maven.aliyun.com/repository/google' }
@@ -20,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        maven { url 'https://www.xionghaoyue.xyz:8082/repository/android-xhy-group/' }
         maven{ url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven{ url'https://maven.aliyun.com/repository/google' }

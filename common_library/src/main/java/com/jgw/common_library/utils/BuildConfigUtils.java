@@ -2,6 +2,7 @@ package com.jgw.common_library.utils;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 
@@ -22,12 +23,15 @@ public class BuildConfigUtils {
         return versionName;
     }
 
-    @Nullable
     public static int getVersionCode() {
         int versionCode = 0;
         PackageInfo packageInfo = getPackageInfo();
         if (packageInfo != null) {
-            versionCode = packageInfo.versionCode;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                versionCode = packageInfo.versionCode;
+            } else {
+                versionCode = (int) packageInfo.getLongVersionCode();
+            }
         }
         return versionCode;
     }
